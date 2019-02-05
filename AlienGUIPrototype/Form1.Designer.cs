@@ -54,6 +54,10 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.cb_portselect = new System.Windows.Forms.ComboBox();
+            this.gb_com = new System.Windows.Forms.GroupBox();
+            this.l_comselect = new System.Windows.Forms.Label();
+            this.b_refreshcom = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.p_maintenance.SuspendLayout();
             this.gb_tasks.SuspendLayout();
@@ -62,6 +66,7 @@
             this.gb_servos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ud_servoangle)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.gb_com.SuspendLayout();
             this.SuspendLayout();
             // 
             // p_operations
@@ -70,9 +75,9 @@
             this.p_operations.Controls.Add(this.cb_colourchoice);
             this.p_operations.Controls.Add(this.b_start);
             this.p_operations.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.p_operations.Location = new System.Drawing.Point(0, 28);
+            this.p_operations.Location = new System.Drawing.Point(0, 0);
             this.p_operations.Name = "p_operations";
-            this.p_operations.Size = new System.Drawing.Size(800, 422);
+            this.p_operations.Size = new System.Drawing.Size(1126, 450);
             this.p_operations.TabIndex = 0;
             // 
             // l_operationinstructions
@@ -93,7 +98,9 @@
             this.cb_colourchoice.Items.AddRange(new object[] {
             "Red",
             "Green",
-            "Blue"});
+            "Blue",
+            "Yellow",
+            "White"});
             this.cb_colourchoice.Location = new System.Drawing.Point(335, 188);
             this.cb_colourchoice.Name = "cb_colourchoice";
             this.cb_colourchoice.Size = new System.Drawing.Size(121, 24);
@@ -110,6 +117,7 @@
             // 
             // p_maintenance
             // 
+            this.p_maintenance.Controls.Add(this.gb_com);
             this.p_maintenance.Controls.Add(this.gb_tasks);
             this.p_maintenance.Controls.Add(this.gb_inputs);
             this.p_maintenance.Controls.Add(this.gb_led);
@@ -118,9 +126,8 @@
             this.p_maintenance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.p_maintenance.Location = new System.Drawing.Point(0, 0);
             this.p_maintenance.Name = "p_maintenance";
-            this.p_maintenance.Size = new System.Drawing.Size(800, 450);
+            this.p_maintenance.Size = new System.Drawing.Size(1126, 450);
             this.p_maintenance.TabIndex = 1;
-            this.p_maintenance.Visible = false;
             // 
             // gb_tasks
             // 
@@ -141,6 +148,7 @@
             this.b_task.TabIndex = 1;
             this.b_task.Text = "Run";
             this.b_task.UseVisualStyleBackColor = true;
+            this.b_task.Click += new System.EventHandler(this.b_task_Click);
             // 
             // cb_taskselect
             // 
@@ -304,7 +312,7 @@
             this.m_options});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1126, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -340,17 +348,57 @@
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
             // 
+            // cb_portselect
+            // 
+            this.cb_portselect.FormattingEnabled = true;
+            this.cb_portselect.Location = new System.Drawing.Point(90, 38);
+            this.cb_portselect.Name = "cb_portselect";
+            this.cb_portselect.Size = new System.Drawing.Size(121, 24);
+            this.cb_portselect.TabIndex = 10;
+            // 
+            // gb_com
+            // 
+            this.gb_com.Controls.Add(this.b_refreshcom);
+            this.gb_com.Controls.Add(this.l_comselect);
+            this.gb_com.Controls.Add(this.cb_portselect);
+            this.gb_com.Location = new System.Drawing.Point(837, 54);
+            this.gb_com.Name = "gb_com";
+            this.gb_com.Size = new System.Drawing.Size(248, 158);
+            this.gb_com.TabIndex = 11;
+            this.gb_com.TabStop = false;
+            this.gb_com.Text = "COM Ports";
+            // 
+            // l_comselect
+            // 
+            this.l_comselect.AutoSize = true;
+            this.l_comselect.Location = new System.Drawing.Point(7, 38);
+            this.l_comselect.Name = "l_comselect";
+            this.l_comselect.Size = new System.Drawing.Size(77, 17);
+            this.l_comselect.TabIndex = 11;
+            this.l_comselect.Text = "Port Select";
+            // 
+            // b_refreshcom
+            // 
+            this.b_refreshcom.Location = new System.Drawing.Point(90, 92);
+            this.b_refreshcom.Name = "b_refreshcom";
+            this.b_refreshcom.Size = new System.Drawing.Size(121, 23);
+            this.b_refreshcom.TabIndex = 12;
+            this.b_refreshcom.Text = "Refresh List";
+            this.b_refreshcom.UseVisualStyleBackColor = true;
+            this.b_refreshcom.Click += new System.EventHandler(this.b_refreshcom_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.p_operations);
+            this.ClientSize = new System.Drawing.Size(1126, 450);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.p_maintenance);
+            this.Controls.Add(this.p_operations);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.p_operations.ResumeLayout(false);
             this.p_operations.PerformLayout();
             this.p_maintenance.ResumeLayout(false);
@@ -363,6 +411,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ud_servoangle)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.gb_com.ResumeLayout(false);
+            this.gb_com.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -396,6 +446,10 @@
         private System.Windows.Forms.GroupBox gb_tasks;
         private System.Windows.Forms.Button b_task;
         private System.Windows.Forms.ComboBox cb_taskselect;
+        private System.Windows.Forms.ComboBox cb_portselect;
+        private System.Windows.Forms.GroupBox gb_com;
+        private System.Windows.Forms.Button b_refreshcom;
+        private System.Windows.Forms.Label l_comselect;
     }
 }
 
