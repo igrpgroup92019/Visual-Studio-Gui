@@ -33,6 +33,10 @@
             this.cb_colourchoice = new System.Windows.Forms.ComboBox();
             this.b_start = new System.Windows.Forms.Button();
             this.p_maintenance = new System.Windows.Forms.Panel();
+            this.gb_com = new System.Windows.Forms.GroupBox();
+            this.b_refreshcom = new System.Windows.Forms.Button();
+            this.l_comselect = new System.Windows.Forms.Label();
+            this.cb_portselect = new System.Windows.Forms.ComboBox();
             this.gb_tasks = new System.Windows.Forms.GroupBox();
             this.b_task = new System.Windows.Forms.Button();
             this.cb_taskselect = new System.Windows.Forms.ComboBox();
@@ -54,19 +58,16 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.cb_portselect = new System.Windows.Forms.ComboBox();
-            this.gb_com = new System.Windows.Forms.GroupBox();
-            this.l_comselect = new System.Windows.Forms.Label();
-            this.b_refreshcom = new System.Windows.Forms.Button();
+            this.b_comconnect = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.p_maintenance.SuspendLayout();
+            this.gb_com.SuspendLayout();
             this.gb_tasks.SuspendLayout();
             this.gb_inputs.SuspendLayout();
             this.gb_led.SuspendLayout();
             this.gb_servos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ud_servoangle)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            this.gb_com.SuspendLayout();
             this.SuspendLayout();
             // 
             // p_operations
@@ -129,6 +130,46 @@
             this.p_maintenance.Size = new System.Drawing.Size(1126, 450);
             this.p_maintenance.TabIndex = 1;
             // 
+            // gb_com
+            // 
+            this.gb_com.Controls.Add(this.b_comconnect);
+            this.gb_com.Controls.Add(this.b_refreshcom);
+            this.gb_com.Controls.Add(this.l_comselect);
+            this.gb_com.Controls.Add(this.cb_portselect);
+            this.gb_com.Location = new System.Drawing.Point(837, 54);
+            this.gb_com.Name = "gb_com";
+            this.gb_com.Size = new System.Drawing.Size(248, 158);
+            this.gb_com.TabIndex = 11;
+            this.gb_com.TabStop = false;
+            this.gb_com.Text = "COM Ports";
+            // 
+            // b_refreshcom
+            // 
+            this.b_refreshcom.Location = new System.Drawing.Point(90, 92);
+            this.b_refreshcom.Name = "b_refreshcom";
+            this.b_refreshcom.Size = new System.Drawing.Size(121, 23);
+            this.b_refreshcom.TabIndex = 12;
+            this.b_refreshcom.Text = "Refresh List";
+            this.b_refreshcom.UseVisualStyleBackColor = true;
+            this.b_refreshcom.Click += new System.EventHandler(this.b_refreshcom_Click);
+            // 
+            // l_comselect
+            // 
+            this.l_comselect.AutoSize = true;
+            this.l_comselect.Location = new System.Drawing.Point(7, 38);
+            this.l_comselect.Name = "l_comselect";
+            this.l_comselect.Size = new System.Drawing.Size(77, 17);
+            this.l_comselect.TabIndex = 11;
+            this.l_comselect.Text = "Port Select";
+            // 
+            // cb_portselect
+            // 
+            this.cb_portselect.FormattingEnabled = true;
+            this.cb_portselect.Location = new System.Drawing.Point(90, 38);
+            this.cb_portselect.Name = "cb_portselect";
+            this.cb_portselect.Size = new System.Drawing.Size(121, 24);
+            this.cb_portselect.TabIndex = 10;
+            // 
             // gb_tasks
             // 
             this.gb_tasks.Controls.Add(this.b_task);
@@ -161,7 +202,8 @@
             "Find Red",
             "Find Green",
             "Find Blue",
-            "Test Distance"});
+            "Test Distance",
+            "Spew COM Data"});
             this.cb_taskselect.Location = new System.Drawing.Point(25, 38);
             this.cb_taskselect.Name = "cb_taskselect";
             this.cb_taskselect.Size = new System.Drawing.Size(121, 24);
@@ -348,44 +390,15 @@
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
             // 
-            // cb_portselect
+            // b_comconnect
             // 
-            this.cb_portselect.FormattingEnabled = true;
-            this.cb_portselect.Location = new System.Drawing.Point(90, 38);
-            this.cb_portselect.Name = "cb_portselect";
-            this.cb_portselect.Size = new System.Drawing.Size(121, 24);
-            this.cb_portselect.TabIndex = 10;
-            // 
-            // gb_com
-            // 
-            this.gb_com.Controls.Add(this.b_refreshcom);
-            this.gb_com.Controls.Add(this.l_comselect);
-            this.gb_com.Controls.Add(this.cb_portselect);
-            this.gb_com.Location = new System.Drawing.Point(837, 54);
-            this.gb_com.Name = "gb_com";
-            this.gb_com.Size = new System.Drawing.Size(248, 158);
-            this.gb_com.TabIndex = 11;
-            this.gb_com.TabStop = false;
-            this.gb_com.Text = "COM Ports";
-            // 
-            // l_comselect
-            // 
-            this.l_comselect.AutoSize = true;
-            this.l_comselect.Location = new System.Drawing.Point(7, 38);
-            this.l_comselect.Name = "l_comselect";
-            this.l_comselect.Size = new System.Drawing.Size(77, 17);
-            this.l_comselect.TabIndex = 11;
-            this.l_comselect.Text = "Port Select";
-            // 
-            // b_refreshcom
-            // 
-            this.b_refreshcom.Location = new System.Drawing.Point(90, 92);
-            this.b_refreshcom.Name = "b_refreshcom";
-            this.b_refreshcom.Size = new System.Drawing.Size(121, 23);
-            this.b_refreshcom.TabIndex = 12;
-            this.b_refreshcom.Text = "Refresh List";
-            this.b_refreshcom.UseVisualStyleBackColor = true;
-            this.b_refreshcom.Click += new System.EventHandler(this.b_refreshcom_Click);
+            this.b_comconnect.Location = new System.Drawing.Point(10, 92);
+            this.b_comconnect.Name = "b_comconnect";
+            this.b_comconnect.Size = new System.Drawing.Size(75, 23);
+            this.b_comconnect.TabIndex = 13;
+            this.b_comconnect.Text = "Connect";
+            this.b_comconnect.UseVisualStyleBackColor = true;
+            this.b_comconnect.Click += new System.EventHandler(this.b_comconnect_Click);
             // 
             // Form1
             // 
@@ -403,6 +416,8 @@
             this.p_operations.PerformLayout();
             this.p_maintenance.ResumeLayout(false);
             this.p_maintenance.PerformLayout();
+            this.gb_com.ResumeLayout(false);
+            this.gb_com.PerformLayout();
             this.gb_tasks.ResumeLayout(false);
             this.gb_inputs.ResumeLayout(false);
             this.gb_led.ResumeLayout(false);
@@ -411,8 +426,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ud_servoangle)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.gb_com.ResumeLayout(false);
-            this.gb_com.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -450,6 +463,7 @@
         private System.Windows.Forms.GroupBox gb_com;
         private System.Windows.Forms.Button b_refreshcom;
         private System.Windows.Forms.Label l_comselect;
+        private System.Windows.Forms.Button b_comconnect;
     }
 }
 
