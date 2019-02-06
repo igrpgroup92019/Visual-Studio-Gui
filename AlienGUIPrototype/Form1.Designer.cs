@@ -34,6 +34,7 @@
             this.b_start = new System.Windows.Forms.Button();
             this.p_maintenance = new System.Windows.Forms.Panel();
             this.gb_com = new System.Windows.Forms.GroupBox();
+            this.b_comconnect = new System.Windows.Forms.Button();
             this.b_refreshcom = new System.Windows.Forms.Button();
             this.l_comselect = new System.Windows.Forms.Label();
             this.cb_portselect = new System.Windows.Forms.ComboBox();
@@ -58,7 +59,9 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.b_comconnect = new System.Windows.Forms.Button();
+            this.pb_r = new System.Windows.Forms.ProgressBar();
+            this.pb_g = new System.Windows.Forms.ProgressBar();
+            this.pb_b = new System.Windows.Forms.ProgressBar();
             this.p_operations.SuspendLayout();
             this.p_maintenance.SuspendLayout();
             this.gb_com.SuspendLayout();
@@ -118,6 +121,9 @@
             // 
             // p_maintenance
             // 
+            this.p_maintenance.Controls.Add(this.pb_b);
+            this.p_maintenance.Controls.Add(this.pb_g);
+            this.p_maintenance.Controls.Add(this.pb_r);
             this.p_maintenance.Controls.Add(this.gb_com);
             this.p_maintenance.Controls.Add(this.gb_tasks);
             this.p_maintenance.Controls.Add(this.gb_inputs);
@@ -142,6 +148,16 @@
             this.gb_com.TabIndex = 11;
             this.gb_com.TabStop = false;
             this.gb_com.Text = "COM Ports";
+            // 
+            // b_comconnect
+            // 
+            this.b_comconnect.Location = new System.Drawing.Point(10, 92);
+            this.b_comconnect.Name = "b_comconnect";
+            this.b_comconnect.Size = new System.Drawing.Size(75, 23);
+            this.b_comconnect.TabIndex = 13;
+            this.b_comconnect.Text = "Connect";
+            this.b_comconnect.UseVisualStyleBackColor = true;
+            this.b_comconnect.Click += new System.EventHandler(this.b_comconnect_Click);
             // 
             // b_refreshcom
             // 
@@ -390,15 +406,26 @@
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
             // 
-            // b_comconnect
+            // pb_r
             // 
-            this.b_comconnect.Location = new System.Drawing.Point(10, 92);
-            this.b_comconnect.Name = "b_comconnect";
-            this.b_comconnect.Size = new System.Drawing.Size(75, 23);
-            this.b_comconnect.TabIndex = 13;
-            this.b_comconnect.Text = "Connect";
-            this.b_comconnect.UseVisualStyleBackColor = true;
-            this.b_comconnect.Click += new System.EventHandler(this.b_comconnect_Click);
+            this.pb_r.Location = new System.Drawing.Point(837, 259);
+            this.pb_r.Name = "pb_r";
+            this.pb_r.Size = new System.Drawing.Size(248, 23);
+            this.pb_r.TabIndex = 12;
+            // 
+            // pb_g
+            // 
+            this.pb_g.Location = new System.Drawing.Point(837, 288);
+            this.pb_g.Name = "pb_g";
+            this.pb_g.Size = new System.Drawing.Size(248, 23);
+            this.pb_g.TabIndex = 13;
+            // 
+            // pb_b
+            // 
+            this.pb_b.Location = new System.Drawing.Point(837, 317);
+            this.pb_b.Name = "pb_b";
+            this.pb_b.Size = new System.Drawing.Size(248, 23);
+            this.pb_b.TabIndex = 14;
             // 
             // Form1
             // 
@@ -464,6 +491,9 @@
         private System.Windows.Forms.Button b_refreshcom;
         private System.Windows.Forms.Label l_comselect;
         private System.Windows.Forms.Button b_comconnect;
+        private System.Windows.Forms.ProgressBar pb_b;
+        private System.Windows.Forms.ProgressBar pb_g;
+        private System.Windows.Forms.ProgressBar pb_r;
     }
 }
 

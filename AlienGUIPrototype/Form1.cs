@@ -20,7 +20,7 @@ namespace AlienGUIPrototype
         // COM connection status
         static bool comconnected = false;
 
-        const int COM_BAUD = 115200;
+        const int COM_BAUD = 9600;
         const int READ_TIMEOUT = 10000;     // Read reply timeout
 
         public Form1()
@@ -117,7 +117,30 @@ namespace AlienGUIPrototype
                         case "Spew COM Data":
                             while (true)
                             {
-                                tb_debug.AppendText(serialPort1.ReadLine() + "\r\n");
+                                if (serialPort1.ReadBufferSize > 0)
+                                {
+                                    try
+                                    {
+                                        string input = serialPort1.ReadLine().ToString() + "\r\n";
+                                        tb_debug.AppendText(input);
+                                        int[] inputs = processReadings(input);
+                                        tb_debug.AppendText("r:" + inputs[1] + ", g:" + inputs[2] + ", b:" + inputs[3] + "\r\n");
+                                        int total = inputs.Sum()-inputs[0];
+                                        if (total> 0)
+                                        {
+                                            for (int i = 0; i < inputs.Length; i++) inputs[i] = inputs[i] * 100 / total;
+                                            //pb_c.Value = inputs[0];
+                                            pb_r.Value = inputs[1];
+                                            pb_g.Value = inputs[2];
+                                            pb_b.Value = inputs[3];
+                                        }
+                                    }
+                                    catch (IOException exe)
+                                    {
+                                        // Ignoring exceptions
+                                    }
+                                    Thread.Sleep(800);
+                                }
                             }
                             break;
                         default:
@@ -129,6 +152,10 @@ namespace AlienGUIPrototype
             {
                 tb_debug.AppendText("Error in operation:\r\n");
                 tb_debug.AppendText(ex + "\r\n");
+            }
+            catch (InvalidOperationException exep)
+            {
+                tb_debug.AppendText("\r\n" + exep.ToString() + "\r\n");
             }
         }
 
@@ -144,13 +171,14 @@ namespace AlienGUIPrototype
             if (SerialPort.GetPortNames().Length == 0)
             {
                 tb_debug.AppendText("none\r\n");
+                cb_portselect.SelectedIndex = -1;
+                cb_portselect.Text = "";
             }
             else
             {
                 cb_portselect.SelectedIndex = 0;
             }
-            serialPort1.BaudRate = COM_BAUD;
-            Thread.Sleep(2000);   // sleep 2 seconds
+            //Thread.Sleep(2000);   // sleep 2 seconds
         }
 
         private bool establishCOMConnection()
@@ -181,6 +209,20 @@ namespace AlienGUIPrototype
             {
                 tb_debug.AppendText("Failed to connect to COM port.\r\n");
             }
+        }
+
+        private int[] processReadings(string readings)
+        {
+            //tb_debug.AppendText("raw:   " + readings);
+            int[] vals = new int[4];
+            string[] individual = readings.Split(',');
+            //tb_debug.AppendText("split: " + string.Join(" ", individual));
+            for (int i = 0; i < vals.Length; i++)
+            {
+                vals[i] = Int32.Parse(individual[i]);
+            }
+            //tb_debug.AppendText("value: " + string.Join(" ", vals) + "\r\n\r\n");
+            return vals;
         }
     }
 }
