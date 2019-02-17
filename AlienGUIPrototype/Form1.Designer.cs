@@ -59,9 +59,7 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.pb_r = new System.Windows.Forms.ProgressBar();
-            this.pb_g = new System.Windows.Forms.ProgressBar();
-            this.pb_b = new System.Windows.Forms.ProgressBar();
+            this.b_readall = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.p_maintenance.SuspendLayout();
             this.gb_com.SuspendLayout();
@@ -121,9 +119,6 @@
             // 
             // p_maintenance
             // 
-            this.p_maintenance.Controls.Add(this.pb_b);
-            this.p_maintenance.Controls.Add(this.pb_g);
-            this.p_maintenance.Controls.Add(this.pb_r);
             this.p_maintenance.Controls.Add(this.gb_com);
             this.p_maintenance.Controls.Add(this.gb_tasks);
             this.p_maintenance.Controls.Add(this.gb_inputs);
@@ -218,8 +213,7 @@
             "Find Red",
             "Find Green",
             "Find Blue",
-            "Test Distance",
-            "Spew COM Data"});
+            "Test Distance"});
             this.cb_taskselect.Location = new System.Drawing.Point(25, 38);
             this.cb_taskselect.Name = "cb_taskselect";
             this.cb_taskselect.Size = new System.Drawing.Size(121, 24);
@@ -227,6 +221,7 @@
             // 
             // gb_inputs
             // 
+            this.gb_inputs.Controls.Add(this.b_readall);
             this.gb_inputs.Controls.Add(this.b_readdistance);
             this.gb_inputs.Controls.Add(this.b_readcolour);
             this.gb_inputs.Location = new System.Drawing.Point(12, 259);
@@ -244,6 +239,7 @@
             this.b_readdistance.TabIndex = 1;
             this.b_readdistance.Text = "Distance";
             this.b_readdistance.UseVisualStyleBackColor = true;
+            this.b_readdistance.Click += new System.EventHandler(this.b_readdistance_Click);
             // 
             // b_readcolour
             // 
@@ -253,6 +249,7 @@
             this.b_readcolour.TabIndex = 0;
             this.b_readcolour.Text = "Colour";
             this.b_readcolour.UseVisualStyleBackColor = true;
+            this.b_readcolour.Click += new System.EventHandler(this.b_readcolour_Click);
             // 
             // gb_led
             // 
@@ -313,6 +310,7 @@
             this.b_servoset.TabIndex = 7;
             this.b_servoset.Text = "Go";
             this.b_servoset.UseVisualStyleBackColor = true;
+            this.b_servoset.Click += new System.EventHandler(this.b_servoset_Click);
             // 
             // ud_servoangle
             // 
@@ -406,26 +404,15 @@
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
             // 
-            // pb_r
+            // b_readall
             // 
-            this.pb_r.Location = new System.Drawing.Point(837, 259);
-            this.pb_r.Name = "pb_r";
-            this.pb_r.Size = new System.Drawing.Size(248, 23);
-            this.pb_r.TabIndex = 12;
-            // 
-            // pb_g
-            // 
-            this.pb_g.Location = new System.Drawing.Point(837, 288);
-            this.pb_g.Name = "pb_g";
-            this.pb_g.Size = new System.Drawing.Size(248, 23);
-            this.pb_g.TabIndex = 13;
-            // 
-            // pb_b
-            // 
-            this.pb_b.Location = new System.Drawing.Point(837, 317);
-            this.pb_b.Name = "pb_b";
-            this.pb_b.Size = new System.Drawing.Size(248, 23);
-            this.pb_b.TabIndex = 14;
+            this.b_readall.Location = new System.Drawing.Point(34, 97);
+            this.b_readall.Name = "b_readall";
+            this.b_readall.Size = new System.Drawing.Size(98, 23);
+            this.b_readall.TabIndex = 2;
+            this.b_readall.Text = "All";
+            this.b_readall.UseVisualStyleBackColor = true;
+            this.b_readall.Click += new System.EventHandler(this.b_readall_Click);
             // 
             // Form1
             // 
@@ -491,9 +478,7 @@
         private System.Windows.Forms.Button b_refreshcom;
         private System.Windows.Forms.Label l_comselect;
         private System.Windows.Forms.Button b_comconnect;
-        private System.Windows.Forms.ProgressBar pb_b;
-        private System.Windows.Forms.ProgressBar pb_g;
-        private System.Windows.Forms.ProgressBar pb_r;
+        private System.Windows.Forms.Button b_readall;
     }
 }
 

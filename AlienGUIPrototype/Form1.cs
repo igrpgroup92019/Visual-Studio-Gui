@@ -34,9 +34,6 @@ namespace AlienGUIPrototype
             cb_taskselect.SelectedIndex = 0;
             // Unimplemented button operations
             b_ledset.Enabled = false;
-            b_readcolour.Enabled = false;
-            b_readdistance.Enabled = false;
-            b_servoset.Enabled = false;
             b_start.Enabled = false;
         }
 
@@ -82,16 +79,14 @@ namespace AlienGUIPrototype
 
         private void b_task_Click(object sender, EventArgs e)
         {
-            String selected = cb_taskselect.SelectedItem.ToString();
+            String selected = cb_taskselect.SelectedText;//cb_taskselect.SelectedItem.ToString();
             try
             {
                 if (comconnected)
                     switch (selected)
                     {
                         case "Test MBED Connection":
-                            serialPort1.Write("p,0,");
-                            string portin = serialPort1.ReadLine();
-                            tb_debug.AppendText(portin + "\r\n");
+                            tb_debug.AppendText("Unimplemented task\r\n");
                             break;
                         case "Test FPGA Connection":
                             tb_debug.AppendText("Unimplemented task\r\n");
@@ -114,48 +109,19 @@ namespace AlienGUIPrototype
                         case "Test Distance":
                             tb_debug.AppendText("Unimplemented task\r\n");
                             break;
-                        case "Spew COM Data":
-                            while (true)
-                            {
-                                if (serialPort1.ReadBufferSize > 0)
-                                {
-                                    try
-                                    {
-                                        string input = serialPort1.ReadLine().ToString() + "\r\n";
-                                        tb_debug.AppendText(input);
-                                        int[] inputs = processReadings(input);
-                                        tb_debug.AppendText("r:" + inputs[1] + ", g:" + inputs[2] + ", b:" + inputs[3] + "\r\n");
-                                        int total = inputs.Sum()-inputs[0];
-                                        if (total> 0)
-                                        {
-                                            for (int i = 0; i < inputs.Length; i++) inputs[i] = inputs[i] * 100 / total;
-                                            //pb_c.Value = inputs[0];
-                                            pb_r.Value = inputs[1];
-                                            pb_g.Value = inputs[2];
-                                            pb_b.Value = inputs[3];
-                                        }
-                                    }
-                                    catch (IOException exe)
-                                    {
-                                        // Ignoring exceptions
-                                    }
-                                    Thread.Sleep(800);
-                                }
-                            }
-                            break;
                         default:
                             break;
                     }
-                else tb_debug.AppendText("Please select a COM port and connnect.");
+                else tb_debug.AppendText("Please select a COM port and connnect.\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("Error in operation:\r\n");
-                tb_debug.AppendText(ex + "\r\n");
+                tb_debug.AppendText("\r\nError in operation:\r\n");
+                tb_debug.AppendText(ex.Message + "\r\n");
             }
             catch (InvalidOperationException exep)
             {
-                tb_debug.AppendText("\r\n" + exep.ToString() + "\r\n");
+                tb_debug.AppendText("\r\n" + exep.Message + "\r\n");
             }
         }
 
@@ -181,6 +147,7 @@ namespace AlienGUIPrototype
             //Thread.Sleep(2000);   // sleep 2 seconds
         }
 
+        // Attempt to connect with the selected COM port, return true or false based on success
         private bool establishCOMConnection()
         {
             try
@@ -211,18 +178,169 @@ namespace AlienGUIPrototype
             }
         }
 
+        // Takes an input of the form "x,#,[...]" and returns an integer array, one entry per value
         private int[] processReadings(string readings)
         {
-            //tb_debug.AppendText("raw:   " + readings);
-            int[] vals = new int[4];
             string[] individual = readings.Split(',');
-            //tb_debug.AppendText("split: " + string.Join(" ", individual));
+            int[] vals = new int[Int32.Parse(individual[1])];
             for (int i = 0; i < vals.Length; i++)
             {
-                vals[i] = Int32.Parse(individual[i]);
+                vals[i] = Int32.Parse(individual[i + 2]);
             }
-            //tb_debug.AppendText("value: " + string.Join(" ", vals) + "\r\n\r\n");
             return vals;
+        }
+
+        // Sends a message to the MBED, returns false if an error is thrown, true otherwise.
+        private Boolean sendToMBED(string message)
+        {
+            try
+            {
+                serialPort1.WriteLine(message);
+            }
+            catch (Exception e)
+            {
+                tb_debug.AppendText("Exception raised when trying to write to port:\r\n" + e.Message + "\r\n");
+                return false;
+            }
+            return true;
+        }
+
+        // Reads the next line from the MBED, tries (attempts) times with (delay)ms gap between each. Throws exception if failure.
+        private string readFromMBED(int attempts = 100, int delay = 100)
+        {
+            if (!comconnected)
+            {
+                throw new IOException("Not connected to a COM port.");
+            }
+            string portIn = "";
+            for (int i = 0; i < attempts; i++)
+            {
+                try
+                {
+                    portIn = serialPort1.ReadLine();
+                    return portIn;
+                }
+                catch (IOException e)
+                {
+                    tb_debug.AppendText(e.Message);
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new TimeoutException("No input from port in designated time.\r\n");
+        }
+
+        private void b_readcolour_Click(object sender, EventArgs e)
+        {
+            Boolean success = sendToMBED("c,0");
+            if (!success)
+                tb_debug.AppendText("Failed to request colour information.\r\n");
+            try
+            {
+                string message = readFromMBED();
+                if (char.Equals(message[0], 'c'))
+                {
+                    int[] vals = processReadings(message);
+                    tb_debug.AppendText("Colour readings:\r\n c:" + vals[0] + ", r:" + vals[1] + ", g:" + vals[2] + ", b:" + vals[3] + "\r\n");
+                }
+                else
+                {
+                    tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                tb_debug.AppendText("Failed to read colour from port:\r\n" + ex.Message + "\r\n");
+            }
+        }
+
+        private void b_readdistance_Click(object sender, EventArgs e)
+        {
+            {
+                Boolean success = sendToMBED("c,0");
+                if (!success)
+                    tb_debug.AppendText("Failed to request distance information.\r\n");
+                try
+                {
+                    string message = readFromMBED();
+                    if (char.Equals(message[0], 'd'))
+                    {
+                        int[] vals = processReadings(message);
+                        tb_debug.AppendText("Distance reading: " + vals[0] + "\r\n");
+                    }
+                    else
+                    {
+                        tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    tb_debug.AppendText("Failed to read distance from port:\r\n" + ex.Message + "\r\n");
+                }
+            }
+        }
+
+        private void b_readall_Click(object sender, EventArgs e)
+        {
+            Boolean success = sendToMBED("e,0");
+            if (!success)
+                tb_debug.AppendText("Failed to request sensor information.\r\n");
+            try
+            {
+                string message = readFromMBED();
+                if (char.Equals(message[0], 'r'))
+                {
+                    int[] vals = processReadings(message);
+                    tb_debug.AppendText("Sensor readings:\r\n dist:" + vals[0] + ", c:" + vals[1] + ", r:" + vals[2] + ", g:" + vals[3] + ", b:" + vals[4] + "\r\n");
+                }
+                else
+                {
+                    tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                tb_debug.AppendText("Failed to read sensors from port:\r\n" + ex.Message + "\r\n");
+            }
+        }
+
+        private void b_servoset_Click(object sender, EventArgs e)
+        {
+            int servonum = -1;
+            switch (cb_servoselect.SelectedText)
+            {
+                case "Turntable":
+                    servonum = 0;
+                    break;
+                case "Pusher":
+                    servonum = 1;
+                    break;
+            }
+            int angle = Decimal.ToInt32(ud_servoangle.Value);
+            Boolean success = sendToMBED("s,2," + servonum + "," + angle);
+            try
+            {
+                string message = readFromMBED(1000, 50);
+                switch (message[0])
+                {
+                    case 'a':
+                        tb_debug.AppendText("Task completed successfully.\r\n");
+                        break;
+                    case 'f':
+                        tb_debug.AppendText("Failed to complete task.\r\n");
+                        break;
+                    default:
+                        tb_debug.AppendText("Unexpected message received:\r\n" + message + "\r\n");
+                        break;
+                }
+            }
+            catch (TimeoutException ex)
+            {
+                tb_debug.AppendText("Timeout when reading from port:\r\n" + ex.Message + "\r\n");
+            }
+            catch (IOException ex)
+            {
+                tb_debug.AppendText("Failed to read from port:\r\n" + ex.Message + "\r\n");
+            }
         }
     }
 }
