@@ -116,7 +116,7 @@ namespace AlienGUIPrototype
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("\r\nError in operation:\r\n");
+                tb_debug.AppendText("\r\nError in operation:\r\n  ");
                 tb_debug.AppendText(ex.Message + "\r\n");
             }
             catch (InvalidOperationException exep)
@@ -152,6 +152,8 @@ namespace AlienGUIPrototype
         {
             try
             {
+                if (comconnected)
+                    serialPort1.Close();
                 if (cb_portselect.Items.Count == 0) return false;
                 string portname = cb_portselect.SelectedItem.ToString();
                 serialPort1.PortName = portname;
@@ -199,7 +201,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception e)
             {
-                tb_debug.AppendText("Exception raised when trying to write to port:\r\n" + e.Message + "\r\n");
+                tb_debug.AppendText("Exception raised when trying to write to port:\r\n  " + e.Message + "\r\n");
                 return false;
             }
             return true;
@@ -218,11 +220,12 @@ namespace AlienGUIPrototype
                 try
                 {
                     portIn = serialPort1.ReadLine();
+                    tb_debug.AppendText("\r\n\r\n" + portIn + "\r\n\r\n");
                     return portIn;
                 }
                 catch (IOException e)
                 {
-                    tb_debug.AppendText(e.Message);
+                    //tb_debug.AppendText(e.Message);
                     Thread.Sleep(delay);
                 }
             }
@@ -244,19 +247,19 @@ namespace AlienGUIPrototype
                 }
                 else
                 {
-                    tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                    tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
                 }
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to read colour from port:\r\n" + ex.Message + "\r\n");
+                tb_debug.AppendText("Failed to read colour from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
         private void b_readdistance_Click(object sender, EventArgs e)
         {
             {
-                Boolean success = sendToMBED("c,0");
+                Boolean success = sendToMBED("d,0");
                 if (!success)
                     tb_debug.AppendText("Failed to request distance information.\r\n");
                 try
@@ -269,19 +272,19 @@ namespace AlienGUIPrototype
                     }
                     else
                     {
-                        tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                        tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
                     }
                 }
                 catch (Exception ex)
                 {
-                    tb_debug.AppendText("Failed to read distance from port:\r\n" + ex.Message + "\r\n");
+                    tb_debug.AppendText("Failed to read distance from port:\r\n  " + ex.Message + "\r\n");
                 }
             }
         }
 
         private void b_readall_Click(object sender, EventArgs e)
         {
-            Boolean success = sendToMBED("e,0");
+            Boolean success = sendToMBED("r,0");
             if (!success)
                 tb_debug.AppendText("Failed to request sensor information.\r\n");
             try
@@ -294,12 +297,12 @@ namespace AlienGUIPrototype
                 }
                 else
                 {
-                    tb_debug.AppendText("Unexpected message:\r\n" + message + "\r\n");
+                    tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
                 }
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to read sensors from port:\r\n" + ex.Message + "\r\n");
+                tb_debug.AppendText("Failed to read sensors from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
@@ -329,17 +332,17 @@ namespace AlienGUIPrototype
                         tb_debug.AppendText("Failed to complete task.\r\n");
                         break;
                     default:
-                        tb_debug.AppendText("Unexpected message received:\r\n" + message + "\r\n");
+                        tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
                         break;
                 }
             }
             catch (TimeoutException ex)
             {
-                tb_debug.AppendText("Timeout when reading from port:\r\n" + ex.Message + "\r\n");
+                tb_debug.AppendText("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("Failed to read from port:\r\n" + ex.Message + "\r\n");
+                tb_debug.AppendText("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
         }
     }
