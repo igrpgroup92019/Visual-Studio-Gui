@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;                // Added for IO exception
 using System.IO.Ports;          // Added for serial ports
 using System.Threading;         // Added for sleep
+using System.Speech.Synthesis;  // Added for speech
 
 namespace AlienGUIPrototype
 {
@@ -19,9 +13,11 @@ namespace AlienGUIPrototype
 
         // COM connection status
         static bool comconnected = false;
-
+        // COM constants
         const int COM_BAUD = 9600;
         const int READ_TIMEOUT = 10000;     // Read reply timeout
+        // Speech
+        static SpeechSynthesizer speak = new SpeechSynthesizer();
 
         public Form1()
         {
@@ -33,8 +29,9 @@ namespace AlienGUIPrototype
             cb_servoselect.SelectedIndex = 0;
             cb_taskselect.SelectedIndex = 0;
             // Unimplemented button operations
-            b_ledset.Enabled = false;
             b_start.Enabled = false;
+            // Other
+            speak.SetOutputToDefaultAudioDevice();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -85,18 +82,6 @@ namespace AlienGUIPrototype
                 if (comconnected)
                     switch (selected)
                     {
-                        case "Test MBED Connection":
-                            tb_debug.AppendText("Unimplemented task\r\n");
-                            break;
-                        case "Test FPGA Connection":
-                            tb_debug.AppendText("Unimplemented task\r\n");
-                            break;
-                        case "Rotate Turntable":
-                            tb_debug.AppendText("Unimplemented task\r\n");
-                            break;
-                        case "Activate Pusher":
-                            tb_debug.AppendText("Unimplemented task\r\n");
-                            break;
                         case "Find Red":
                             tb_debug.AppendText("Unimplemented task\r\n");
                             break;
@@ -106,7 +91,19 @@ namespace AlienGUIPrototype
                         case "Find Blue":
                             tb_debug.AppendText("Unimplemented task\r\n");
                             break;
+                        case "Find Yellow":
+                            tb_debug.AppendText("Unimplemented task\r\n");
+                            break;
+                        case "Find White":
+                            tb_debug.AppendText("Unimplemented task\r\n");
+                            break;
                         case "Test Distance":
+                            tb_debug.AppendText("Unimplemented task\r\n");
+                            break;
+                        case "Rotate Turntable Once":
+                            tb_debug.AppendText("Unimplemented task\r\n");
+                            break;
+                        case "Activate Pusher":
                             tb_debug.AppendText("Unimplemented task\r\n");
                             break;
                         default:
@@ -193,34 +190,25 @@ namespace AlienGUIPrototype
         }
 
         // Sends a message to the MBED, returns false if an error is thrown, true otherwise.
-        private Boolean sendToMBED(string message)
+        private void sendToMBED(string message)
         {
-            try
-            {
-                serialPort1.WriteLine(message);
-            }
-            catch (Exception e)
-            {
-                tb_debug.AppendText("Exception raised when trying to write to port:\r\n  " + e.Message + "\r\n");
-                return false;
-            }
-            return true;
+            if (!comconnected)
+                throw new IOException("Not connected to a COM port.");
+            serialPort1.WriteLine(message);
         }
 
         // Reads the next line from the MBED, tries (attempts) times with (delay)ms gap between each. Throws exception if failure.
         private string readFromMBED(int attempts = 100, int delay = 100)
         {
             if (!comconnected)
-            {
                 throw new IOException("Not connected to a COM port.");
-            }
             string portIn = "";
             for (int i = 0; i < attempts; i++)
             {
                 try
                 {
                     portIn = serialPort1.ReadLine();
-                    tb_debug.AppendText("\r\n\r\n" + portIn + "\r\n\r\n");
+                    //tb_debug.AppendText("\r\n\r\n" + portIn + "\r\n\r\n");
                     return portIn;
                 }
                 catch (IOException e)
@@ -234,9 +222,15 @@ namespace AlienGUIPrototype
 
         private void b_readcolour_Click(object sender, EventArgs e)
         {
-            Boolean success = sendToMBED("c,0");
-            if (!success)
-                tb_debug.AppendText("Failed to request colour information.\r\n");
+            try
+            {
+                sendToMBED("c,0");
+            }
+            catch (Exception ex)
+            {
+                tb_debug.AppendText("Failed to request colour information:\r\n" + ex.Message + "\r\n");
+                return;
+            }
             try
             {
                 string message = readFromMBED();
@@ -259,9 +253,15 @@ namespace AlienGUIPrototype
         private void b_readdistance_Click(object sender, EventArgs e)
         {
             {
-                Boolean success = sendToMBED("d,0");
-                if (!success)
-                    tb_debug.AppendText("Failed to request distance information.\r\n");
+                try
+                {
+                    sendToMBED("d,0");
+                }
+                catch (Exception ex)
+                {
+                    tb_debug.AppendText("Failed to request distance information:\r\n" + ex.Message + "\r\n");
+                    return;
+                }
                 try
                 {
                     string message = readFromMBED();
@@ -284,9 +284,15 @@ namespace AlienGUIPrototype
 
         private void b_readall_Click(object sender, EventArgs e)
         {
-            Boolean success = sendToMBED("r,0");
-            if (!success)
-                tb_debug.AppendText("Failed to request sensor information.\r\n");
+            try
+            {
+                sendToMBED("r,0");
+            }
+            catch (Exception ex)
+            {
+                tb_debug.AppendText("Failed to request sensor information:\r\n" + ex.Message + "\r\n");
+                return;
+            }
             try
             {
                 string message = readFromMBED();
@@ -319,7 +325,15 @@ namespace AlienGUIPrototype
                     break;
             }
             int angle = Decimal.ToInt32(ud_servoangle.Value);
-            Boolean success = sendToMBED("s,2," + servonum + "," + angle);
+            try
+            {
+                sendToMBED("s,2," + servonum + "," + angle);
+            }
+            catch (Exception ex)
+            {
+                tb_debug.AppendText("Failed to request servo movement:\r\n" + ex.Message + "\r\n");
+                return;
+            }
             try
             {
                 string message = readFromMBED(1000, 50);
@@ -344,6 +358,40 @@ namespace AlienGUIPrototype
             {
                 tb_debug.AppendText("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
+        }
+
+        private void b_speak_Click(object sender, EventArgs e)
+        {
+            speak.Speak(tb_speak.Text);
+        }
+
+        private void b_start_Click(object sender, EventArgs e)
+        {
+            textOutput("You have selected the colour " + cb_colourchoice.SelectedItem.ToString()+".\r\n");
+            textOutput("This is not yet implemented.\r\n");
+        }
+
+        private void textOutput(string text)
+        {
+            tb_output.AppendText(text);
+            if(cb_voice.Checked)
+                speak.Speak(text);
+        }
+
+        private void cb_colourchoice_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_colourchoice.SelectedIndex == 0)
+                b_start.Enabled = false;
+            else
+                b_start.Enabled = true;
+        }
+
+        private void cb_voice_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cb_voice.Checked)
+                cb_voice.Text = "Voice Enabled";
+            else
+                cb_voice.Text = "Voice Disabled";
         }
     }
 }
