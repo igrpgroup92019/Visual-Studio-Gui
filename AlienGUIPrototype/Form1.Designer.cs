@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.p_operations = new System.Windows.Forms.Panel();
+            this.tb_output = new System.Windows.Forms.TextBox();
             this.cb_colourchoice = new System.Windows.Forms.ComboBox();
             this.b_start = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -36,6 +37,11 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mi_togglevoice = new System.Windows.Forms.ToolStripMenuItem();
+            this.mi_language = new System.Windows.Forms.ToolStripMenuItem();
+            this.mi_language_english = new System.Windows.Forms.ToolStripMenuItem();
+            this.mi_language_other = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_debug = new System.Windows.Forms.TextBox();
             this.gb_servos = new System.Windows.Forms.GroupBox();
             this.b_servoset = new System.Windows.Forms.Button();
@@ -60,8 +66,6 @@
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
-            this.tb_output = new System.Windows.Forms.TextBox();
-            this.cb_voice = new System.Windows.Forms.CheckBox();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -75,7 +79,6 @@
             // 
             // p_operations
             // 
-            this.p_operations.Controls.Add(this.cb_voice);
             this.p_operations.Controls.Add(this.tb_output);
             this.p_operations.Controls.Add(this.cb_colourchoice);
             this.p_operations.Controls.Add(this.b_start);
@@ -84,6 +87,15 @@
             this.p_operations.Name = "p_operations";
             this.p_operations.Size = new System.Drawing.Size(953, 464);
             this.p_operations.TabIndex = 0;
+            // 
+            // tb_output
+            // 
+            this.tb_output.Location = new System.Drawing.Point(549, 127);
+            this.tb_output.Multiline = true;
+            this.tb_output.Name = "tb_output";
+            this.tb_output.ReadOnly = true;
+            this.tb_output.Size = new System.Drawing.Size(317, 212);
+            this.tb_output.TabIndex = 4;
             // 
             // cb_colourchoice
             // 
@@ -118,7 +130,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.m_options});
+            this.m_options,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(953, 28);
@@ -138,7 +151,7 @@
             // mo_maintenance
             // 
             this.mo_maintenance.Name = "mo_maintenance";
-            this.mo_maintenance.Size = new System.Drawing.Size(216, 26);
+            this.mo_maintenance.Size = new System.Drawing.Size(169, 26);
             this.mo_maintenance.Text = "Maintenance";
             this.mo_maintenance.Click += new System.EventHandler(this.mo_maintenance_Click);
             // 
@@ -146,22 +159,64 @@
             // 
             this.mo_operation.Enabled = false;
             this.mo_operation.Name = "mo_operation";
-            this.mo_operation.Size = new System.Drawing.Size(216, 26);
+            this.mo_operation.Size = new System.Drawing.Size(169, 26);
             this.mo_operation.Text = "Operation";
             this.mo_operation.Click += new System.EventHandler(this.mo_operation_Click);
             // 
             // mo_exit
             // 
             this.mo_exit.Name = "mo_exit";
-            this.mo_exit.Size = new System.Drawing.Size(216, 26);
+            this.mo_exit.Size = new System.Drawing.Size(169, 26);
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mi_togglevoice,
+            this.mi_language});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // mi_togglevoice
+            // 
+            this.mi_togglevoice.Name = "mi_togglevoice";
+            this.mi_togglevoice.Size = new System.Drawing.Size(169, 26);
+            this.mi_togglevoice.Text = "Enable Voice";
+            this.mi_togglevoice.Click += new System.EventHandler(this.mi_togglevoice_Click);
+            // 
+            // mi_language
+            // 
+            this.mi_language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mi_language_english,
+            this.mi_language_other});
+            this.mi_language.Name = "mi_language";
+            this.mi_language.Size = new System.Drawing.Size(169, 26);
+            this.mi_language.Text = "Language";
+            // 
+            // mi_language_english
+            // 
+            this.mi_language_english.Checked = true;
+            this.mi_language_english.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mi_language_english.Name = "mi_language_english";
+            this.mi_language_english.Size = new System.Drawing.Size(131, 26);
+            this.mi_language_english.Text = "English";
+            this.mi_language_english.Click += new System.EventHandler(this.mi_language_english_Click);
+            // 
+            // mi_language_other
+            // 
+            this.mi_language_other.Name = "mi_language_other";
+            this.mi_language_other.Size = new System.Drawing.Size(131, 26);
+            this.mi_language_other.Text = "Other";
+            this.mi_language_other.Click += new System.EventHandler(this.mi_language_other_Click);
             // 
             // tb_debug
             // 
             this.tb_debug.Location = new System.Drawing.Point(505, 31);
             this.tb_debug.Multiline = true;
             this.tb_debug.Name = "tb_debug";
+            this.tb_debug.ReadOnly = true;
             this.tb_debug.Size = new System.Drawing.Size(431, 423);
             this.tb_debug.TabIndex = 5;
             // 
@@ -412,34 +467,14 @@
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
             // 
-            // tb_output
-            // 
-            this.tb_output.Location = new System.Drawing.Point(549, 127);
-            this.tb_output.Multiline = true;
-            this.tb_output.Name = "tb_output";
-            this.tb_output.ReadOnly = true;
-            this.tb_output.Size = new System.Drawing.Size(317, 212);
-            this.tb_output.TabIndex = 4;
-            // 
-            // cb_voice
-            // 
-            this.cb_voice.AutoSize = true;
-            this.cb_voice.Location = new System.Drawing.Point(102, 345);
-            this.cb_voice.Name = "cb_voice";
-            this.cb_voice.Size = new System.Drawing.Size(124, 21);
-            this.cb_voice.TabIndex = 5;
-            this.cb_voice.Text = "Voice Disabled";
-            this.cb_voice.UseVisualStyleBackColor = true;
-            this.cb_voice.CheckedChanged += new System.EventHandler(this.cb_voice_CheckedChanged);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(953, 464);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.p_operations);
             this.Controls.Add(this.p_maintenance);
+            this.Controls.Add(this.p_operations);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Alien Control";
@@ -499,7 +534,11 @@
         private System.Windows.Forms.Button b_speak;
         private System.Windows.Forms.Label l_speak;
         private System.Windows.Forms.TextBox tb_output;
-        private System.Windows.Forms.CheckBox cb_voice;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mi_language;
+        private System.Windows.Forms.ToolStripMenuItem mi_language_english;
+        private System.Windows.Forms.ToolStripMenuItem mi_togglevoice;
+        private System.Windows.Forms.ToolStripMenuItem mi_language_other;
     }
 }
 

@@ -18,6 +18,9 @@ namespace AlienGUIPrototype
         const int READ_TIMEOUT = 10000;     // Read reply timeout
         // Speech
         static SpeechSynthesizer speak = new SpeechSynthesizer();
+        static bool speechenabled = false;
+        // Output text
+        static string[,] messages = new string[,] { { } };
 
         public Form1()
         {
@@ -101,10 +104,72 @@ namespace AlienGUIPrototype
                             tb_debug.AppendText("Unimplemented task\r\n");
                             break;
                         case "Rotate Turntable Once":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            try
+                            {
+                                tb_debug.AppendText("Sending rotation command");
+                                sendToMBED("s,0,72");
+                                tb_debug.AppendText("Waiting for confirmation");
+                                string message = readFromMBED();
+                                switch (message[0])
+                                {
+                                    case 'a':
+                                        tb_debug.AppendText("Success\r\n");
+                                        break;
+                                    case 'f':
+                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
+                                        break;
+                                    default:
+                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
+                                        break;
+                                }
+                                tb_debug.AppendText("Operation complete");
+                            }
+                            catch (Exception ex)
+                            {
+                                tb_debug.AppendText("Error in operation: \r\n" + ex.Message + "\r\n");
+                            }
                             break;
                         case "Activate Pusher":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            try
+                            {
+                                tb_debug.AppendText("Sending push command");
+                                sendToMBED("s,1,80");
+                                tb_debug.AppendText("Waiting for confirmation");
+                                string message = readFromMBED();
+                                switch (message[0])
+                                {
+                                    case 'a':
+                                        tb_debug.AppendText("Success\r\n");
+                                        break;
+                                    case 'f':
+                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
+                                        return;
+                                    default:
+                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
+                                        return;
+                                }
+                                tb_debug.AppendText("Sending return command");
+                                sendToMBED("s,1,0");
+                                tb_debug.AppendText("Waiting for confirmation");
+                                message = readFromMBED();
+                                switch (message[0])
+                                {
+                                    case 'a':
+                                        tb_debug.AppendText("Success\r\n");
+                                        break;
+                                    case 'f':
+                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
+                                        return;
+                                    default:
+                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
+                                        return;
+                                }
+                                tb_debug.AppendText("Operation complete");
+                            }
+                            catch (Exception ex)
+                            {
+                                tb_debug.AppendText("Error in operation: \r\n" + ex.Message + "\r\n");
+                            }
                             break;
                         default:
                             break;
@@ -367,31 +432,53 @@ namespace AlienGUIPrototype
 
         private void b_start_Click(object sender, EventArgs e)
         {
-            textOutput("You have selected the colour " + cb_colourchoice.SelectedItem.ToString()+".\r\n");
+            textOutput("You have selected the colour " + cb_colourchoice.SelectedItem.ToString() + ".\r\n");
             textOutput("This is not yet implemented.\r\n");
         }
 
         private void textOutput(string text)
         {
             tb_output.AppendText(text);
-            if(cb_voice.Checked)
+            if (speechenabled)
                 speak.Speak(text);
         }
 
         private void cb_colourchoice_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cb_colourchoice.SelectedIndex == 0)
-                b_start.Enabled = false;
-            else
-                b_start.Enabled = true;
+            b_start.Enabled = !(cb_colourchoice.SelectedIndex == 0);
         }
 
-        private void cb_voice_CheckedChanged(object sender, EventArgs e)
+        private void mi_togglevoice_Click(object sender, EventArgs e)
         {
-            if (cb_voice.Checked)
-                cb_voice.Text = "Voice Enabled";
+            speechenabled = !speechenabled;
+            if (speechenabled)
+                mi_togglevoice.Text = "Disable Voice";
             else
-                cb_voice.Text = "Voice Disabled";
+                mi_togglevoice.Text = "Enable Voice";
+        }
+
+        // Code modified from http://csharphelper.com/blog/2014/08/make-menu-items-act-like-radio-buttons-in-c/
+        private void SelectLanguage(ToolStripMenuItem menu, ToolStripMenuItem checked_item)
+        {
+            foreach (ToolStripItem item in menu.DropDownItems)
+            {
+                if (item is ToolStripMenuItem)
+                {
+                    ToolStripMenuItem menu_item =
+                        item as ToolStripMenuItem;
+                    menu_item.Checked = (menu_item == checked_item);
+                }
+            }
+        }
+
+        private void mi_language_english_Click(object sender, EventArgs e)
+        {
+            SelectLanguage(mi_language, mi_language_english);
+        }
+
+        private void mi_language_other_Click(object sender, EventArgs e)
+        {
+            SelectLanguage(mi_language, mi_language_other);
         }
     }
 }
