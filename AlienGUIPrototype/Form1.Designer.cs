@@ -46,8 +46,6 @@
             this.gb_servos = new System.Windows.Forms.GroupBox();
             this.b_servoset = new System.Windows.Forms.Button();
             this.ud_servoangle = new System.Windows.Forms.NumericUpDown();
-            this.cb_servoselect = new System.Windows.Forms.ComboBox();
-            this.l_servoselect = new System.Windows.Forms.Label();
             this.l_servoangle = new System.Windows.Forms.Label();
             this.gb_inputs = new System.Windows.Forms.GroupBox();
             this.b_readall = new System.Windows.Forms.Button();
@@ -66,6 +64,9 @@
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
+            this.gb_manualcommand = new System.Windows.Forms.GroupBox();
+            this.tb_command = new System.Windows.Forms.TextBox();
+            this.b_sendcommand = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -75,6 +76,7 @@
             this.gb_com.SuspendLayout();
             this.p_maintenance.SuspendLayout();
             this.gb_speak.SuspendLayout();
+            this.gb_manualcommand.SuspendLayout();
             this.SuspendLayout();
             // 
             // p_operations
@@ -85,7 +87,7 @@
             this.p_operations.Dock = System.Windows.Forms.DockStyle.Fill;
             this.p_operations.Location = new System.Drawing.Point(0, 0);
             this.p_operations.Name = "p_operations";
-            this.p_operations.Size = new System.Drawing.Size(953, 464);
+            this.p_operations.Size = new System.Drawing.Size(1303, 464);
             this.p_operations.TabIndex = 0;
             // 
             // tb_output
@@ -134,7 +136,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(953, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1303, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -224,8 +226,6 @@
             // 
             this.gb_servos.Controls.Add(this.b_servoset);
             this.gb_servos.Controls.Add(this.ud_servoangle);
-            this.gb_servos.Controls.Add(this.cb_servoselect);
-            this.gb_servos.Controls.Add(this.l_servoselect);
             this.gb_servos.Controls.Add(this.l_servoangle);
             this.gb_servos.Location = new System.Drawing.Point(12, 31);
             this.gb_servos.Name = "gb_servos";
@@ -255,26 +255,6 @@
             this.ud_servoangle.Name = "ud_servoangle";
             this.ud_servoangle.Size = new System.Drawing.Size(120, 22);
             this.ud_servoangle.TabIndex = 8;
-            // 
-            // cb_servoselect
-            // 
-            this.cb_servoselect.FormattingEnabled = true;
-            this.cb_servoselect.Items.AddRange(new object[] {
-            "Turntable",
-            "Pusher"});
-            this.cb_servoselect.Location = new System.Drawing.Point(63, 38);
-            this.cb_servoselect.Name = "cb_servoselect";
-            this.cb_servoselect.Size = new System.Drawing.Size(121, 24);
-            this.cb_servoselect.TabIndex = 7;
-            // 
-            // l_servoselect
-            // 
-            this.l_servoselect.AutoSize = true;
-            this.l_servoselect.Location = new System.Drawing.Point(6, 38);
-            this.l_servoselect.Name = "l_servoselect";
-            this.l_servoselect.Size = new System.Drawing.Size(45, 17);
-            this.l_servoselect.TabIndex = 3;
-            this.l_servoselect.Text = "Servo";
             // 
             // l_servoangle
             // 
@@ -417,6 +397,7 @@
             // 
             // p_maintenance
             // 
+            this.p_maintenance.Controls.Add(this.gb_manualcommand);
             this.p_maintenance.Controls.Add(this.gb_speak);
             this.p_maintenance.Controls.Add(this.gb_com);
             this.p_maintenance.Controls.Add(this.gb_tasks);
@@ -426,7 +407,7 @@
             this.p_maintenance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.p_maintenance.Location = new System.Drawing.Point(0, 0);
             this.p_maintenance.Name = "p_maintenance";
-            this.p_maintenance.Size = new System.Drawing.Size(953, 464);
+            this.p_maintenance.Size = new System.Drawing.Size(1303, 464);
             this.p_maintenance.TabIndex = 1;
             // 
             // gb_speak
@@ -467,11 +448,39 @@
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
             // 
+            // gb_manualcommand
+            // 
+            this.gb_manualcommand.Controls.Add(this.b_sendcommand);
+            this.gb_manualcommand.Controls.Add(this.tb_command);
+            this.gb_manualcommand.Location = new System.Drawing.Point(955, 32);
+            this.gb_manualcommand.Name = "gb_manualcommand";
+            this.gb_manualcommand.Size = new System.Drawing.Size(200, 100);
+            this.gb_manualcommand.TabIndex = 12;
+            this.gb_manualcommand.TabStop = false;
+            this.gb_manualcommand.Text = "Command";
+            // 
+            // tb_command
+            // 
+            this.tb_command.Location = new System.Drawing.Point(7, 34);
+            this.tb_command.Name = "tb_command";
+            this.tb_command.Size = new System.Drawing.Size(187, 22);
+            this.tb_command.TabIndex = 0;
+            // 
+            // b_sendcommand
+            // 
+            this.b_sendcommand.Location = new System.Drawing.Point(7, 67);
+            this.b_sendcommand.Name = "b_sendcommand";
+            this.b_sendcommand.Size = new System.Drawing.Size(75, 23);
+            this.b_sendcommand.TabIndex = 1;
+            this.b_sendcommand.Text = "Send";
+            this.b_sendcommand.UseVisualStyleBackColor = true;
+            this.b_sendcommand.Click += new System.EventHandler(this.b_sendcommand_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(953, 464);
+            this.ClientSize = new System.Drawing.Size(1303, 464);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.p_maintenance);
             this.Controls.Add(this.p_operations);
@@ -494,6 +503,8 @@
             this.p_maintenance.PerformLayout();
             this.gb_speak.ResumeLayout(false);
             this.gb_speak.PerformLayout();
+            this.gb_manualcommand.ResumeLayout(false);
+            this.gb_manualcommand.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -513,8 +524,6 @@
         private System.Windows.Forms.GroupBox gb_servos;
         private System.Windows.Forms.Button b_servoset;
         private System.Windows.Forms.NumericUpDown ud_servoangle;
-        private System.Windows.Forms.ComboBox cb_servoselect;
-        private System.Windows.Forms.Label l_servoselect;
         private System.Windows.Forms.Label l_servoangle;
         private System.Windows.Forms.GroupBox gb_inputs;
         private System.Windows.Forms.Button b_readall;
@@ -539,6 +548,9 @@
         private System.Windows.Forms.ToolStripMenuItem mi_language_english;
         private System.Windows.Forms.ToolStripMenuItem mi_togglevoice;
         private System.Windows.Forms.ToolStripMenuItem mi_language_other;
+        private System.Windows.Forms.GroupBox gb_manualcommand;
+        private System.Windows.Forms.Button b_sendcommand;
+        private System.Windows.Forms.TextBox tb_command;
     }
 }
 

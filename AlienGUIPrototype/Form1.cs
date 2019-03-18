@@ -29,7 +29,6 @@ namespace AlienGUIPrototype
             p_maintenance.Visible = false;
             mo_operation.Enabled = false;
             cb_colourchoice.SelectedIndex = 0;
-            cb_servoselect.SelectedIndex = 0;
             cb_taskselect.SelectedIndex = 0;
             // Unimplemented button operations
             b_start.Enabled = false;
@@ -273,8 +272,10 @@ namespace AlienGUIPrototype
                 try
                 {
                     portIn = serialPort1.ReadLine();
-                    //tb_debug.AppendText("\r\n\r\n" + portIn + "\r\n\r\n");
-                    return portIn;
+                    if(portIn[0]=='m')
+                        tb_debug.AppendText("Recieved message: " + portIn + "\r\n");
+                    else
+                        return portIn;
                 }
                 catch (IOException e)
                 {
@@ -379,16 +380,7 @@ namespace AlienGUIPrototype
 
         private void b_servoset_Click(object sender, EventArgs e)
         {
-            int servonum = -1;
-            switch (cb_servoselect.SelectedText)
-            {
-                case "Turntable":
-                    servonum = 0;
-                    break;
-                case "Pusher":
-                    servonum = 1;
-                    break;
-            }
+            int servonum = 1;
             int angle = Decimal.ToInt32(ud_servoangle.Value);
             try
             {
@@ -479,6 +471,13 @@ namespace AlienGUIPrototype
         private void mi_language_other_Click(object sender, EventArgs e)
         {
             SelectLanguage(mi_language, mi_language_other);
+        }
+
+        private void b_sendcommand_Click(object sender, EventArgs e)
+        {
+            string command = tb_command.Text;
+            tb_debug.AppendText("Sending command: " + command);
+            sendToMBED(command);
         }
     }
 }
