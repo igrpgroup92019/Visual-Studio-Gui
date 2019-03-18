@@ -37,16 +37,19 @@
             this.mo_maintenance = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_operation = new System.Windows.Forms.ToolStripMenuItem();
             this.mo_exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mi_togglevoice = new System.Windows.Forms.ToolStripMenuItem();
-            this.mi_language = new System.Windows.Forms.ToolStripMenuItem();
-            this.mi_language_english = new System.Windows.Forms.ToolStripMenuItem();
-            this.mi_language_other = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_settings = new System.Windows.Forms.ToolStripMenuItem();
+            this.ms_togglevoice = new System.Windows.Forms.ToolStripMenuItem();
+            this.ms_language = new System.Windows.Forms.ToolStripMenuItem();
+            this.ml_language_english = new System.Windows.Forms.ToolStripMenuItem();
+            this.ml_language_other = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_debug = new System.Windows.Forms.TextBox();
             this.gb_servos = new System.Windows.Forms.GroupBox();
-            this.b_servoset = new System.Windows.Forms.Button();
+            this.l_pusher = new System.Windows.Forms.Label();
+            this.l_turntable = new System.Windows.Forms.Label();
+            this.b_pull = new System.Windows.Forms.Button();
+            this.b_push = new System.Windows.Forms.Button();
+            this.b_turntableset = new System.Windows.Forms.Button();
             this.ud_servoangle = new System.Windows.Forms.NumericUpDown();
-            this.l_servoangle = new System.Windows.Forms.Label();
             this.gb_inputs = new System.Windows.Forms.GroupBox();
             this.b_readall = new System.Windows.Forms.Button();
             this.b_readdistance = new System.Windows.Forms.Button();
@@ -60,13 +63,13 @@
             this.l_comselect = new System.Windows.Forms.Label();
             this.cb_portselect = new System.Windows.Forms.ComboBox();
             this.p_maintenance = new System.Windows.Forms.Panel();
+            this.gb_manualcommand = new System.Windows.Forms.GroupBox();
+            this.b_sendcommand = new System.Windows.Forms.Button();
+            this.tb_command = new System.Windows.Forms.TextBox();
             this.gb_speak = new System.Windows.Forms.GroupBox();
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
-            this.gb_manualcommand = new System.Windows.Forms.GroupBox();
-            this.tb_command = new System.Windows.Forms.TextBox();
-            this.b_sendcommand = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -75,8 +78,8 @@
             this.gb_tasks.SuspendLayout();
             this.gb_com.SuspendLayout();
             this.p_maintenance.SuspendLayout();
-            this.gb_speak.SuspendLayout();
             this.gb_manualcommand.SuspendLayout();
+            this.gb_speak.SuspendLayout();
             this.SuspendLayout();
             // 
             // p_operations
@@ -133,7 +136,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.m_options,
-            this.settingsToolStripMenuItem});
+            this.m_settings});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1303, 28);
@@ -172,46 +175,46 @@
             this.mo_exit.Text = "Exit";
             this.mo_exit.Click += new System.EventHandler(this.mo_exit_Click);
             // 
-            // settingsToolStripMenuItem
+            // m_settings
             // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mi_togglevoice,
-            this.mi_language});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
-            this.settingsToolStripMenuItem.Text = "Settings";
+            this.m_settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ms_togglevoice,
+            this.ms_language});
+            this.m_settings.Name = "m_settings";
+            this.m_settings.Size = new System.Drawing.Size(74, 24);
+            this.m_settings.Text = "Settings";
             // 
-            // mi_togglevoice
+            // ms_togglevoice
             // 
-            this.mi_togglevoice.Name = "mi_togglevoice";
-            this.mi_togglevoice.Size = new System.Drawing.Size(169, 26);
-            this.mi_togglevoice.Text = "Enable Voice";
-            this.mi_togglevoice.Click += new System.EventHandler(this.mi_togglevoice_Click);
+            this.ms_togglevoice.Name = "ms_togglevoice";
+            this.ms_togglevoice.Size = new System.Drawing.Size(169, 26);
+            this.ms_togglevoice.Text = "Enable Voice";
+            this.ms_togglevoice.Click += new System.EventHandler(this.ms_togglevoice_Click);
             // 
-            // mi_language
+            // ms_language
             // 
-            this.mi_language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mi_language_english,
-            this.mi_language_other});
-            this.mi_language.Name = "mi_language";
-            this.mi_language.Size = new System.Drawing.Size(169, 26);
-            this.mi_language.Text = "Language";
+            this.ms_language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ml_language_english,
+            this.ml_language_other});
+            this.ms_language.Name = "ms_language";
+            this.ms_language.Size = new System.Drawing.Size(169, 26);
+            this.ms_language.Text = "Language";
             // 
-            // mi_language_english
+            // ml_language_english
             // 
-            this.mi_language_english.Checked = true;
-            this.mi_language_english.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mi_language_english.Name = "mi_language_english";
-            this.mi_language_english.Size = new System.Drawing.Size(131, 26);
-            this.mi_language_english.Text = "English";
-            this.mi_language_english.Click += new System.EventHandler(this.mi_language_english_Click);
+            this.ml_language_english.Checked = true;
+            this.ml_language_english.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ml_language_english.Name = "ml_language_english";
+            this.ml_language_english.Size = new System.Drawing.Size(131, 26);
+            this.ml_language_english.Text = "English";
+            this.ml_language_english.Click += new System.EventHandler(this.ml_language_english_Click);
             // 
-            // mi_language_other
+            // ml_language_other
             // 
-            this.mi_language_other.Name = "mi_language_other";
-            this.mi_language_other.Size = new System.Drawing.Size(131, 26);
-            this.mi_language_other.Text = "Other";
-            this.mi_language_other.Click += new System.EventHandler(this.mi_language_other_Click);
+            this.ml_language_other.Name = "ml_language_other";
+            this.ml_language_other.Size = new System.Drawing.Size(131, 26);
+            this.ml_language_other.Text = "Other";
+            this.ml_language_other.Click += new System.EventHandler(this.ml_language_other_Click);
             // 
             // tb_debug
             // 
@@ -224,9 +227,12 @@
             // 
             // gb_servos
             // 
-            this.gb_servos.Controls.Add(this.b_servoset);
+            this.gb_servos.Controls.Add(this.l_pusher);
+            this.gb_servos.Controls.Add(this.l_turntable);
+            this.gb_servos.Controls.Add(this.b_pull);
+            this.gb_servos.Controls.Add(this.b_push);
+            this.gb_servos.Controls.Add(this.b_turntableset);
             this.gb_servos.Controls.Add(this.ud_servoangle);
-            this.gb_servos.Controls.Add(this.l_servoangle);
             this.gb_servos.Location = new System.Drawing.Point(12, 31);
             this.gb_servos.Name = "gb_servos";
             this.gb_servos.Size = new System.Drawing.Size(200, 158);
@@ -234,36 +240,65 @@
             this.gb_servos.TabStop = false;
             this.gb_servos.Text = "Servo Control";
             // 
-            // b_servoset
+            // l_pusher
             // 
-            this.b_servoset.Location = new System.Drawing.Point(64, 111);
-            this.b_servoset.Name = "b_servoset";
-            this.b_servoset.Size = new System.Drawing.Size(121, 23);
-            this.b_servoset.TabIndex = 7;
-            this.b_servoset.Text = "Go";
-            this.b_servoset.UseVisualStyleBackColor = true;
-            this.b_servoset.Click += new System.EventHandler(this.b_servoset_Click);
+            this.l_pusher.AutoSize = true;
+            this.l_pusher.Location = new System.Drawing.Point(6, 99);
+            this.l_pusher.Name = "l_pusher";
+            this.l_pusher.Size = new System.Drawing.Size(53, 17);
+            this.l_pusher.TabIndex = 12;
+            this.l_pusher.Text = "Pusher";
+            // 
+            // l_turntable
+            // 
+            this.l_turntable.AutoSize = true;
+            this.l_turntable.Location = new System.Drawing.Point(6, 38);
+            this.l_turntable.Name = "l_turntable";
+            this.l_turntable.Size = new System.Drawing.Size(69, 17);
+            this.l_turntable.TabIndex = 11;
+            this.l_turntable.Text = "Turntable";
+            // 
+            // b_pull
+            // 
+            this.b_pull.Location = new System.Drawing.Point(113, 119);
+            this.b_pull.Name = "b_pull";
+            this.b_pull.Size = new System.Drawing.Size(87, 23);
+            this.b_pull.TabIndex = 10;
+            this.b_pull.Text = "Pull";
+            this.b_pull.UseVisualStyleBackColor = true;
+            this.b_pull.Click += new System.EventHandler(this.b_pull_Click);
+            // 
+            // b_push
+            // 
+            this.b_push.Location = new System.Drawing.Point(9, 119);
+            this.b_push.Name = "b_push";
+            this.b_push.Size = new System.Drawing.Size(87, 23);
+            this.b_push.TabIndex = 9;
+            this.b_push.Text = "Push";
+            this.b_push.UseVisualStyleBackColor = true;
+            this.b_push.Click += new System.EventHandler(this.b_push_Click);
+            // 
+            // b_turntableset
+            // 
+            this.b_turntableset.Location = new System.Drawing.Point(9, 58);
+            this.b_turntableset.Name = "b_turntableset";
+            this.b_turntableset.Size = new System.Drawing.Size(87, 23);
+            this.b_turntableset.TabIndex = 7;
+            this.b_turntableset.Text = "Go";
+            this.b_turntableset.UseVisualStyleBackColor = true;
+            this.b_turntableset.Click += new System.EventHandler(this.b_turntableset_Click);
             // 
             // ud_servoangle
             // 
-            this.ud_servoangle.Location = new System.Drawing.Point(64, 69);
+            this.ud_servoangle.Location = new System.Drawing.Point(113, 58);
             this.ud_servoangle.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
             this.ud_servoangle.Name = "ud_servoangle";
-            this.ud_servoangle.Size = new System.Drawing.Size(120, 22);
+            this.ud_servoangle.Size = new System.Drawing.Size(87, 22);
             this.ud_servoangle.TabIndex = 8;
-            // 
-            // l_servoangle
-            // 
-            this.l_servoangle.AutoSize = true;
-            this.l_servoangle.Location = new System.Drawing.Point(6, 68);
-            this.l_servoangle.Name = "l_servoangle";
-            this.l_servoangle.Size = new System.Drawing.Size(44, 17);
-            this.l_servoangle.TabIndex = 4;
-            this.l_servoangle.Text = "Angle";
             // 
             // gb_inputs
             // 
@@ -410,6 +445,34 @@
             this.p_maintenance.Size = new System.Drawing.Size(1303, 464);
             this.p_maintenance.TabIndex = 1;
             // 
+            // gb_manualcommand
+            // 
+            this.gb_manualcommand.Controls.Add(this.b_sendcommand);
+            this.gb_manualcommand.Controls.Add(this.tb_command);
+            this.gb_manualcommand.Location = new System.Drawing.Point(955, 32);
+            this.gb_manualcommand.Name = "gb_manualcommand";
+            this.gb_manualcommand.Size = new System.Drawing.Size(200, 100);
+            this.gb_manualcommand.TabIndex = 12;
+            this.gb_manualcommand.TabStop = false;
+            this.gb_manualcommand.Text = "Command";
+            // 
+            // b_sendcommand
+            // 
+            this.b_sendcommand.Location = new System.Drawing.Point(7, 67);
+            this.b_sendcommand.Name = "b_sendcommand";
+            this.b_sendcommand.Size = new System.Drawing.Size(75, 23);
+            this.b_sendcommand.TabIndex = 1;
+            this.b_sendcommand.Text = "Send";
+            this.b_sendcommand.UseVisualStyleBackColor = true;
+            this.b_sendcommand.Click += new System.EventHandler(this.b_sendcommand_Click);
+            // 
+            // tb_command
+            // 
+            this.tb_command.Location = new System.Drawing.Point(7, 34);
+            this.tb_command.Name = "tb_command";
+            this.tb_command.Size = new System.Drawing.Size(187, 22);
+            this.tb_command.TabIndex = 0;
+            // 
             // gb_speak
             // 
             this.gb_speak.Controls.Add(this.tb_speak);
@@ -448,42 +511,14 @@
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
             // 
-            // gb_manualcommand
-            // 
-            this.gb_manualcommand.Controls.Add(this.b_sendcommand);
-            this.gb_manualcommand.Controls.Add(this.tb_command);
-            this.gb_manualcommand.Location = new System.Drawing.Point(955, 32);
-            this.gb_manualcommand.Name = "gb_manualcommand";
-            this.gb_manualcommand.Size = new System.Drawing.Size(200, 100);
-            this.gb_manualcommand.TabIndex = 12;
-            this.gb_manualcommand.TabStop = false;
-            this.gb_manualcommand.Text = "Command";
-            // 
-            // tb_command
-            // 
-            this.tb_command.Location = new System.Drawing.Point(7, 34);
-            this.tb_command.Name = "tb_command";
-            this.tb_command.Size = new System.Drawing.Size(187, 22);
-            this.tb_command.TabIndex = 0;
-            // 
-            // b_sendcommand
-            // 
-            this.b_sendcommand.Location = new System.Drawing.Point(7, 67);
-            this.b_sendcommand.Name = "b_sendcommand";
-            this.b_sendcommand.Size = new System.Drawing.Size(75, 23);
-            this.b_sendcommand.TabIndex = 1;
-            this.b_sendcommand.Text = "Send";
-            this.b_sendcommand.UseVisualStyleBackColor = true;
-            this.b_sendcommand.Click += new System.EventHandler(this.b_sendcommand_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1303, 464);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.p_maintenance);
             this.Controls.Add(this.p_operations);
+            this.Controls.Add(this.p_maintenance);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Alien Control";
@@ -501,10 +536,10 @@
             this.gb_com.PerformLayout();
             this.p_maintenance.ResumeLayout(false);
             this.p_maintenance.PerformLayout();
-            this.gb_speak.ResumeLayout(false);
-            this.gb_speak.PerformLayout();
             this.gb_manualcommand.ResumeLayout(false);
             this.gb_manualcommand.PerformLayout();
+            this.gb_speak.ResumeLayout(false);
+            this.gb_speak.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -522,9 +557,8 @@
         private System.Windows.Forms.ToolStripMenuItem mo_exit;
         private System.Windows.Forms.TextBox tb_debug;
         private System.Windows.Forms.GroupBox gb_servos;
-        private System.Windows.Forms.Button b_servoset;
+        private System.Windows.Forms.Button b_turntableset;
         private System.Windows.Forms.NumericUpDown ud_servoangle;
-        private System.Windows.Forms.Label l_servoangle;
         private System.Windows.Forms.GroupBox gb_inputs;
         private System.Windows.Forms.Button b_readall;
         private System.Windows.Forms.Button b_readdistance;
@@ -543,14 +577,18 @@
         private System.Windows.Forms.Button b_speak;
         private System.Windows.Forms.Label l_speak;
         private System.Windows.Forms.TextBox tb_output;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mi_language;
-        private System.Windows.Forms.ToolStripMenuItem mi_language_english;
-        private System.Windows.Forms.ToolStripMenuItem mi_togglevoice;
-        private System.Windows.Forms.ToolStripMenuItem mi_language_other;
+        private System.Windows.Forms.ToolStripMenuItem m_settings;
+        private System.Windows.Forms.ToolStripMenuItem ms_language;
+        private System.Windows.Forms.ToolStripMenuItem ml_language_english;
+        private System.Windows.Forms.ToolStripMenuItem ms_togglevoice;
+        private System.Windows.Forms.ToolStripMenuItem ml_language_other;
         private System.Windows.Forms.GroupBox gb_manualcommand;
         private System.Windows.Forms.Button b_sendcommand;
         private System.Windows.Forms.TextBox tb_command;
+        private System.Windows.Forms.Label l_pusher;
+        private System.Windows.Forms.Label l_turntable;
+        private System.Windows.Forms.Button b_pull;
+        private System.Windows.Forms.Button b_push;
     }
 }
 
