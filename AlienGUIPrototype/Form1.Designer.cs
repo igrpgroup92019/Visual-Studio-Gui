@@ -41,7 +41,7 @@
             this.ms_togglevoice = new System.Windows.Forms.ToolStripMenuItem();
             this.ms_language = new System.Windows.Forms.ToolStripMenuItem();
             this.ml_language_english = new System.Windows.Forms.ToolStripMenuItem();
-            this.ml_language_other = new System.Windows.Forms.ToolStripMenuItem();
+            this.ml_language_italian = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_debug = new System.Windows.Forms.TextBox();
             this.gb_servos = new System.Windows.Forms.GroupBox();
             this.l_pusher = new System.Windows.Forms.Label();
@@ -63,6 +63,7 @@
             this.l_comselect = new System.Windows.Forms.Label();
             this.cb_portselect = new System.Windows.Forms.ComboBox();
             this.p_maintenance = new System.Windows.Forms.Panel();
+            this.cb_mtoggle = new System.Windows.Forms.CheckBox();
             this.gb_manualcommand = new System.Windows.Forms.GroupBox();
             this.b_sendcommand = new System.Windows.Forms.Button();
             this.tb_command = new System.Windows.Forms.TextBox();
@@ -187,7 +188,7 @@
             // ms_togglevoice
             // 
             this.ms_togglevoice.Name = "ms_togglevoice";
-            this.ms_togglevoice.Size = new System.Drawing.Size(169, 26);
+            this.ms_togglevoice.Size = new System.Drawing.Size(216, 26);
             this.ms_togglevoice.Text = "Enable Voice";
             this.ms_togglevoice.Click += new System.EventHandler(this.ms_togglevoice_Click);
             // 
@@ -195,9 +196,9 @@
             // 
             this.ms_language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ml_language_english,
-            this.ml_language_other});
+            this.ml_language_italian});
             this.ms_language.Name = "ms_language";
-            this.ms_language.Size = new System.Drawing.Size(169, 26);
+            this.ms_language.Size = new System.Drawing.Size(216, 26);
             this.ms_language.Text = "Language";
             // 
             // ml_language_english
@@ -205,16 +206,16 @@
             this.ml_language_english.Checked = true;
             this.ml_language_english.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ml_language_english.Name = "ml_language_english";
-            this.ml_language_english.Size = new System.Drawing.Size(131, 26);
+            this.ml_language_english.Size = new System.Drawing.Size(216, 26);
             this.ml_language_english.Text = "English";
             this.ml_language_english.Click += new System.EventHandler(this.ml_language_english_Click);
             // 
-            // ml_language_other
+            // ml_language_italian
             // 
-            this.ml_language_other.Name = "ml_language_other";
-            this.ml_language_other.Size = new System.Drawing.Size(131, 26);
-            this.ml_language_other.Text = "Other";
-            this.ml_language_other.Click += new System.EventHandler(this.ml_language_other_Click);
+            this.ml_language_italian.Name = "ml_language_italian";
+            this.ml_language_italian.Size = new System.Drawing.Size(216, 26);
+            this.ml_language_italian.Text = "Italiano";
+            this.ml_language_italian.Click += new System.EventHandler(this.ml_language_italian_Click);
             // 
             // tb_debug
             // 
@@ -432,6 +433,7 @@
             // 
             // p_maintenance
             // 
+            this.p_maintenance.Controls.Add(this.cb_mtoggle);
             this.p_maintenance.Controls.Add(this.gb_manualcommand);
             this.p_maintenance.Controls.Add(this.gb_speak);
             this.p_maintenance.Controls.Add(this.gb_com);
@@ -444,6 +446,16 @@
             this.p_maintenance.Name = "p_maintenance";
             this.p_maintenance.Size = new System.Drawing.Size(1303, 464);
             this.p_maintenance.TabIndex = 1;
+            // 
+            // cb_mtoggle
+            // 
+            this.cb_mtoggle.AutoSize = true;
+            this.cb_mtoggle.Location = new System.Drawing.Point(955, 167);
+            this.cb_mtoggle.Name = "cb_mtoggle";
+            this.cb_mtoggle.Size = new System.Drawing.Size(126, 21);
+            this.cb_mtoggle.TabIndex = 13;
+            this.cb_mtoggle.Text = "Show M Output";
+            this.cb_mtoggle.UseVisualStyleBackColor = true;
             // 
             // gb_manualcommand
             // 
@@ -581,7 +593,7 @@
         private System.Windows.Forms.ToolStripMenuItem ms_language;
         private System.Windows.Forms.ToolStripMenuItem ml_language_english;
         private System.Windows.Forms.ToolStripMenuItem ms_togglevoice;
-        private System.Windows.Forms.ToolStripMenuItem ml_language_other;
+        private System.Windows.Forms.ToolStripMenuItem ml_language_italian;
         private System.Windows.Forms.GroupBox gb_manualcommand;
         private System.Windows.Forms.Button b_sendcommand;
         private System.Windows.Forms.TextBox tb_command;
@@ -589,6 +601,7 @@
         private System.Windows.Forms.Label l_turntable;
         private System.Windows.Forms.Button b_pull;
         private System.Windows.Forms.Button b_push;
+        private System.Windows.Forms.CheckBox cb_mtoggle;
     }
 }
 

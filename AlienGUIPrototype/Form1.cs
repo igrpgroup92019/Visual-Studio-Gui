@@ -20,8 +20,26 @@ namespace AlienGUIPrototype
         static SpeechSynthesizer speak = new SpeechSynthesizer();
         static bool speechenabled = false;
         // Output text
-        static string[,] messages = new string[,] { { } };
-        static string[,] guitext = new string[,] { { "Start" }, { "Options" }, { "Settings" }, { "Select a colour..." }, { "Red" }, { "Green" }, { "Blue" }, { "Yellow" }, { "White" }, { "Maintenance" }, { "Operation" }, { "Exit" }, { "Enable voice" }, { "Disable voice" }, { "Language" } };
+        static int language = 0;
+        static string[,,] messages = new string[,,] { { { "", "" }, { "", "" } } };
+
+        static string[,] guitext = new string[,] {
+            { "Start",                  "Start" },
+            { "Options",                "Opzioni" },
+            { "Settings",               "Impostazioni" },
+            { "Select a colour...",     "Seleziona un colore..." },
+            { "Red",                    "Rosso" },
+            { "Green",                  "Verde" },
+            { "Blue",                   "Blu" },
+            { "Yellow",                 "Giallo" },
+            { "White",                  "Bianco" },
+            { "Maintenance",            "Manutenzione" },
+            { "Operation",              "Operazione" },
+            { "Exit",                   "Esci" },
+            { "Enable voice",           "Attiva voce" },
+            { "Disable voice",          "Disattiva voce" },
+            { "Language",               "Linguaggio" } };
+
 
         public Form1()
         {
@@ -36,9 +54,10 @@ namespace AlienGUIPrototype
             // Other
             speak.SetOutputToDefaultAudioDevice();
             // Initialise with English language
-            changeLanguage(0);
+            changeLanguage(language);
             // Temporary - for testing, saves 2 clicks
             mo_maintenance_Click(null, null);
+            Thread.Sleep(500);
             b_comconnect_Click(null, null);
         }
 
@@ -62,8 +81,10 @@ namespace AlienGUIPrototype
 
         // Languages
         // 0 - English
-        private void changeLanguage(int language)
+        // 1 - Italian
+        private void changeLanguage(int newlanguage)
         {
+            language = newlanguage;
             b_start.Text = guitext[0, language];
             m_options.Text = guitext[1, language];
             m_settings.Text = guitext[2, language];
@@ -285,18 +306,21 @@ namespace AlienGUIPrototype
             return vals;
         }
 
-        // Sends a message to the MBED, throws IOException if not connected to a COM port, prints exact command sent
+        // Sends a message to the MBED, throws IOException if not connected to a COM port, //prints exact command sent
         private void sendToMBED(string message)
         {
             if (!comconnected)
                 throw new IOException("Not connected to a COM port.");
-            tb_debug.AppendText("Sending command: " + message + "\r\n");
+            //tb_debug.AppendText("Sending command: " + message + "\r\n");
             serialPort1.WriteLine(message);
         }
 
         // Reads the next line from the MBED, returns string. Tries (attempts) times with (delay)ms gap between each. Throws exception if failure.
-        private string readFromMBED(int attempts = 100, int delay = 100)
+        private string readFromMBED(int attempts = 3000, int delay = 5)
         {
+            string lastmessage = null;
+            int messagecount = 0;
+            tb_debug.AppendText("Attempts:" + attempts + ", delay:" + delay + "\r\n");
             if (!comconnected)
                 throw new IOException("Not connected to a COM port.");
             string portIn = "";
@@ -307,15 +331,34 @@ namespace AlienGUIPrototype
                     // Attempt to get input line
                     portIn = serialPort1.ReadLine();
                     // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return message.
-                    if (portIn[0] == 'm')
-                        tb_debug.AppendText("Recieved message: " + portIn + "\r\n");
-                    else
-                        return portIn;
+                    while (portIn[0] == 'm')
+                    {
+                        if (Equals(portIn, lastmessage))
+                        {
+                            if (messagecount == 1)
+                                tb_debug.AppendText("...");
+                            messagecount++;
+                        }
+                        else
+                        {
+                            if (messagecount > 1)
+                                tb_debug.AppendText("x " + messagecount + "\r\n");
+                            messagecount = 1;
+                            if (cb_mtoggle.Checked)
+                                tb_debug.AppendText("Message: " + portIn + "\r\n");
+                        }
+                        portIn = serialPort1.ReadLine();
+                    }
+                    return portIn;
                 }
                 catch (IOException e)
                 {
-                    Thread.Sleep(delay);
                 }
+                catch (InvalidOperationException e)
+                {
+                    return "Port disconnected";
+                }
+                Thread.Sleep(delay);
             }
             throw new TimeoutException("No input from port in designated time.\r\n");
         }
@@ -430,14 +473,14 @@ namespace AlienGUIPrototype
             }
             try
             {
-                string message = readFromMBED(1000, 50);
+                string message = readFromMBED(3000, 5);
                 switch (message[0])
                 {
                     case 'a':
                         tb_debug.AppendText("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task.\r\n");
+                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
                         tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
@@ -468,14 +511,14 @@ namespace AlienGUIPrototype
             }
             try
             {
-                string message = readFromMBED(1000, 50);
+                string message = readFromMBED(3000, 5);
                 switch (message[0])
                 {
                     case 'a':
                         tb_debug.AppendText("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task.\r\n");
+                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
                         tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
@@ -506,14 +549,14 @@ namespace AlienGUIPrototype
             }
             try
             {
-                string message = readFromMBED(1000, 50);
+                string message = readFromMBED();
                 switch (message[0])
                 {
                     case 'a':
                         tb_debug.AppendText("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task.\r\n");
+                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
                         tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
@@ -534,6 +577,8 @@ namespace AlienGUIPrototype
         private void b_sendcommand_Click(object sender, EventArgs e)
         {
             sendToMBED(tb_command.Text);
+            string message = readFromMBED();
+            tb_debug.AppendText("Return: " + message + "\r\n");
         }
 
         // Text-to-speech for typed text
@@ -544,19 +589,89 @@ namespace AlienGUIPrototype
 
         // Operation mode output - includes text and (if enabled) voice
         // TODO - read from language list
-        private void textOutput(string text)
+        private void outputToUser(int text)
         {
-            tb_output.AppendText(text);
+            // 0  - error
+            // 1  - red
+            // 2  - green
+            // 3  - blue
+            // 4  - yellow
+            // 5  - white
+            // 6  - trying to find the [colour]
+            // 7  - block
+            // 8  - sorry i couldn't find the [colour]
+            // 9  - block
+            // 10 - waiting for robot
+            // 11 - pushing block
+            // 12 - robot leaves
+            tb_output.AppendText(messages[text, language, 0]);
             if (speechenabled)
-                speak.Speak(text);
+                speak.Speak(messages[text, language, 1]);
         }
 
         // Operation mode start button
         // TODO - implement full operation
         private void b_start_Click(object sender, EventArgs e)
         {
-            textOutput("You have selected the colour " + cb_colourchoice.SelectedItem.ToString() + ".\r\n");
-            textOutput("This is not yet implemented.\r\n");
+            // Refresh port list
+            b_refreshcom_Click(null, null);
+            // Connect to alien
+            b_comconnect_Click(null, null);
+            // Parse block request
+            int block = cb_colourchoice.SelectedIndex - 1;
+            tb_debug.AppendText("Block number:" + block + "\r\n");
+            string message;
+            outputToUser(6);
+            outputToUser(block);
+            outputToUser(7);
+            // Check for block, rotate if wrong, do 5 times
+            //      Output error if not found
+            // Wait for turtle
+            outputToUser(10);
+            bool turtlehere = false;
+            for (int i = 0; i < 20; i++)
+            {
+                sendToMBED("c,0");
+                message = readFromMBED();
+                if (message[0] != 'd')
+                {
+                    outputToUser(0);
+                    tb_debug.AppendText("Distance error:" + message + "\r\n");
+                    return;
+                }
+                int[] data = processReadings(message);
+                if (data[0] < 85)
+                {
+                    turtlehere = true;
+                    break;
+                }
+            }
+            if (!turtlehere)
+            {
+                outputToUser(0);
+                tb_debug.AppendText("Did not sense turtle in time.\r\n");
+                return;
+            }
+            // Push right block
+            sendToMBED("s,2,0,1");
+            message = readFromMBED();
+            if (message[0] != 'a')
+            {
+                outputToUser(0);
+                tb_debug.AppendText("Error from pushing:" + message + "\r\n");
+                return;
+            }
+            // Retract
+            sendToMBED("s,2,0,0");
+            message = readFromMBED();
+            if (message[0] != 'a')
+            {
+                outputToUser(0);
+                tb_debug.AppendText("Error from retracting:" + message + "\r\n");
+                return;
+            }
+            // Finished
+            // TODO - confirmation to user
         }
 
         // Operation mode combobox, greys out start if index 0
@@ -599,9 +714,10 @@ namespace AlienGUIPrototype
 
         // 'Other' selected
         // TODO - implement actual languages
-        private void ml_language_other_Click(object sender, EventArgs e)
+        private void ml_language_italian_Click(object sender, EventArgs e)
         {
-            selectLanguage(ms_language, ml_language_other);
+            selectLanguage(ms_language, ml_language_italian);
+            changeLanguage(1);
         }
 
 
