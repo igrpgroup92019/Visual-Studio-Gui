@@ -71,6 +71,7 @@
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
+            this.ml_language_bulgarian = new System.Windows.Forms.ToolStripMenuItem();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -196,7 +197,8 @@
             // 
             this.ms_language.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ml_language_english,
-            this.ml_language_italian});
+            this.ml_language_italian,
+            this.ml_language_bulgarian});
             this.ms_language.Name = "ms_language";
             this.ms_language.Size = new System.Drawing.Size(216, 26);
             this.ms_language.Text = "Language";
@@ -373,9 +375,7 @@
             "Find Blue",
             "Find Yellow",
             "Find White",
-            "Test Distance",
-            "Rotate Turntable Once",
-            "Activate Pusher"});
+            "Test Distance"});
             this.cb_taskselect.Location = new System.Drawing.Point(10, 38);
             this.cb_taskselect.Name = "cb_taskselect";
             this.cb_taskselect.Size = new System.Drawing.Size(265, 24);
@@ -450,6 +450,8 @@
             // cb_mtoggle
             // 
             this.cb_mtoggle.AutoSize = true;
+            this.cb_mtoggle.Checked = true;
+            this.cb_mtoggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_mtoggle.Location = new System.Drawing.Point(955, 167);
             this.cb_mtoggle.Name = "cb_mtoggle";
             this.cb_mtoggle.Size = new System.Drawing.Size(126, 21);
@@ -523,14 +525,21 @@
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
             // 
+            // ml_language_bulgarian
+            // 
+            this.ml_language_bulgarian.Name = "ml_language_bulgarian";
+            this.ml_language_bulgarian.Size = new System.Drawing.Size(216, 26);
+            this.ml_language_bulgarian.Text = "български";
+            this.ml_language_bulgarian.Click += new System.EventHandler(this.ml_language_bulgarian_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1303, 464);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.p_operations);
             this.Controls.Add(this.p_maintenance);
+            this.Controls.Add(this.p_operations);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Alien Control";
@@ -602,6 +611,7 @@
         private System.Windows.Forms.Button b_pull;
         private System.Windows.Forms.Button b_push;
         private System.Windows.Forms.CheckBox cb_mtoggle;
+        private System.Windows.Forms.ToolStripMenuItem ml_language_bulgarian;
     }
 }
 

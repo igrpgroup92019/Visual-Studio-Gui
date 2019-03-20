@@ -21,24 +21,52 @@ namespace AlienGUIPrototype
         static bool speechenabled = false;
         // Output text
         static int language = 0;
-        static string[,,] messages = new string[,,] { { { "", "" }, { "", "" } } };
+        static string[,,] messages = new string[,,] {
+        { { "Oh dear, something went wrong. Please check maintenance mode.\r\n", "Oh dear, something went wrong. Please check maintenance mode." },
+                { "Oddio, qualcosa è andato storto. Controlla la modalità manutenzione.\r\n", "Oddio, qualcosa è andato storto. Controlla la modalità manutenzione." },
+                { "Нещо се обърка. Моля проверете регистъра за грешки.\r\n", "Neshto se obarka. Molya proverete registara za greshki." } },
+        { { "red", "red" }, { "rosso", "rosso" }, { "червената", "chervenata" } },
+        { { "green", "green" }, { "verde", "verde" }, { "зелената", "zelenata" } },
+        { { "blue", "blue" }, { "blu", "blu" }, { "синята", "sinyata" } },
+        { { "yellow", "yellow" }, { "giallo", "giallo" }, { "жълтата", "zhaltata" } },
+        { { "white", "white" }, { "bianco", "bianco" }, { "бялата", "byalata" } },
+        { { "Trying to find the ", "Trying to find the " },
+                { "Sto cercando di trovare il blocco ", "Sto cercando di trovare il blocco " },
+                { "Намиране на ", "Namirane na " } },
+        { { " block.\r\n", " block." }, { ".\r\n", "." }, { " тухличка.\r\n", " tuhlichka." } },
+        { { "Sorry, I couldn't find the ", "Sorry, I couldn't find the " },
+                { "Mi dispiace, non riesco a trovare il blocco ", "Mi dispiace, non riesco a trovare il blocco " },
+                { "Грешка при намирането на ", "Greshka pri namiraneto na " } },
+        { { " block.\r\n", " block." }, { ".\r\n", "." }, { " тухличка.\r\n", " tuhlichka." } },
+        { { "I'm waiting for the robot.\r\n", "I'm waiting for the robot." },
+                { "Sto aspettando il robot.\r\n", "Sto aspettando il robot." },
+                { "Чакам робота.\r\n", "Chakam robota." } },
+        { { "Ah, here he is. Here you go, friend.\r\n", "Ah, here he is. Here you go, friend." },
+                { "Ah, è arrivato. Ecco qui, amico.\r\n", "Ah, è arrivato. Ecco qui, amico." },
+                { "Ах, ето го. Заповядай, приятел.\r\n", "Ah, eto go. Zapovyaday, priyatel." } },
+        { { "Bye-bye now!\r\n", "Bye-bye now" }, { "Ciao ciao!\r\n", "Ciao ciao!" }, { "Чао чао!\r\n", "Chao Chao!" } },
+        { { "Connecting to alien...\r\n", "Connecting to alien" },
+                { "Sto connettendo all'alieno.\r\n", "Sto connettendo all'alieno." },
+                { "Свързване с извънземното...\r\n", "Svarzvane s izvanzemnoto…" } }};
 
         static string[,] guitext = new string[,] {
-            { "Start",                  "Start" },
-            { "Options",                "Opzioni" },
-            { "Settings",               "Impostazioni" },
-            { "Select a colour...",     "Seleziona un colore..." },
-            { "Red",                    "Rosso" },
-            { "Green",                  "Verde" },
-            { "Blue",                   "Blu" },
-            { "Yellow",                 "Giallo" },
-            { "White",                  "Bianco" },
-            { "Maintenance",            "Manutenzione" },
-            { "Operation",              "Operazione" },
-            { "Exit",                   "Esci" },
-            { "Enable voice",           "Attiva voce" },
-            { "Disable voice",          "Disattiva voce" },
-            { "Language",               "Linguaggio" } };
+            { "Start",                  "Start",                    "Старт" },
+            { "Options",                "Opzioni",                  "Опции" },
+            { "Settings",               "Impostazioni",             "Настройки" },
+            { "Select a colour...",     "Seleziona un colore...",   "Изберете цвят..." },
+            { "Red",                    "Rosso",                    "Червен" },
+            { "Green",                  "Verde",                    "Зелен" },
+            { "Blue",                   "Blu",                      "Син" },
+            { "Yellow",                 "Giallo",                   "Жълт" },
+            { "White",                  "Bianco",                   "Бял" },
+            { "Maintenance",            "Manutenzione",             "Поддръжка" },
+            { "Operation",              "Operazione",               "Операция" },
+            { "Exit",                   "Esci",                     "Изход" },
+            { "Enable voice",           "Attiva voce",              "Активирай глас" },
+            { "Disable voice",          "Disattiva voce",           "Деактивирай глас" },
+            { "Language",               "Linguaggio",               "Език" } };
+        // Used in debug output
+        static string[] coltotext = new string[] { "red", "green", "blue", "yellow", "white" };
 
 
         public Form1()
@@ -55,10 +83,6 @@ namespace AlienGUIPrototype
             speak.SetOutputToDefaultAudioDevice();
             // Initialise with English language
             changeLanguage(language);
-            // Temporary - for testing, saves 2 clicks
-            mo_maintenance_Click(null, null);
-            Thread.Sleep(500);
-            b_comconnect_Click(null, null);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -74,14 +98,23 @@ namespace AlienGUIPrototype
             }
             else
             {
-                tb_debug.AppendText("No COM ports found.\r\n");
+                debug("No COM ports found.\r\n");
             }
             serialPort1.BaudRate = COM_BAUD;
+            // Temporary - for testing, saves 2 clicks
+            mo_maintenance_Click(null, null);
+            b_comconnect_Click(null, null);
+        }
+
+        private void debug(string text)
+        {
+            tb_debug.AppendText(text);
         }
 
         // Languages
         // 0 - English
         // 1 - Italian
+        // 2 - Bulgarian
         private void changeLanguage(int newlanguage)
         {
             language = newlanguage;
@@ -97,8 +130,178 @@ namespace AlienGUIPrototype
             mo_maintenance.Text = guitext[9, language];
             mo_operation.Text = guitext[10, language];
             mo_exit.Text = guitext[11, language];
-            ms_togglevoice.Text = guitext[12, language];
+            if (speechenabled)
+                ms_togglevoice.Text = guitext[13, language];
+            else
+                ms_togglevoice.Text = guitext[12, language];
             ms_language.Text = guitext[14, language];
+        }
+
+        // Attempt to connect with the selected COM port, return true or false based on success
+        private bool establishCOMConnection(string portname)
+        {
+            try
+            {
+                if (comconnected)
+                    serialPort1.Close();
+                if (cb_portselect.Items.Count == 0) return false;
+                serialPort1.PortName = portname;
+                serialPort1.Open();
+                return true;
+            }
+            catch (IOException e)
+            {
+                debug(e.ToString() + "\r\n");
+                return false;
+            }
+        }
+
+        // Sends a message to the MBED, throws IOException if not connected to a COM port, //prints exact command sent
+        private void sendToMBED(string message)
+        {
+            if (!comconnected)
+                throw new IOException("Not connected to a COM port.");
+            //debug("Sending command: " + message + "\r\n");
+            serialPort1.WriteLine(message);
+        }
+
+        // Reads the next line from the MBED, returns string. Tries (attempts) times with (delay)ms gap between each. Throws IOException if
+        // not connected, TimeoutException if times out.
+        private string readFromMBED(int attempts = 3000, int delay = 5)
+        {
+            string lastmessage = null;
+            int messagecount = 0;
+            //debug("Attempts:" + attempts + ", delay:" + delay + "\r\n");
+            if (!comconnected)
+                throw new IOException("Not connected to a COM port.");
+            string portIn = "";
+            for (int i = 0; i < attempts; i++)
+            {
+                try
+                {
+                    // Attempt to get input line
+                    portIn = serialPort1.ReadLine();
+                    // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return message.
+                    while (portIn[0] == 'm')
+                    {
+                        if (Equals(portIn, lastmessage))
+                        {
+                            if (messagecount == 1)
+                                debug("...");
+                            messagecount++;
+                        }
+                        else
+                        {
+                            if (messagecount > 1)
+                                debug("x " + messagecount + "\r\n");
+                            messagecount = 1;
+                            if (cb_mtoggle.Checked)
+                                debug("Message: " + portIn + "\r\n");
+                        }
+                        portIn = serialPort1.ReadLine();
+                    }
+                    return portIn;
+                }
+                catch (IOException e)
+                {
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new IOException("Port disconnected");
+                }
+                Thread.Sleep(delay);
+            }
+            throw new TimeoutException("No input from port in designated time.\r\n");
+        }
+
+        // Returns index of colour in front of sensor, throws IOException if not connected, TimeoutException if times out
+        // Colours
+        // 0 - red
+        // 1 - green
+        // 2 - blue
+        // 3 - yellow
+        // 4 - white
+        // TODO - fix colour logic variables so they work with the actual environment
+        private int getColour()
+        {
+            sendToMBED("c,0");
+            int[] data = processReadings(readFromMBED());
+            debug($"Colours read: c{data[0]} r{data[1]} g{data[2]} b{data[3]}\r\n");
+            // Logic for colour comparison
+            // Variables
+            double bluemult = 1.5;
+            int ywcutoff = 290;
+            double bluecompcheck = 0.85;
+            int r = data[1];
+            int g = data[2];
+            int b = Convert.ToInt32(data[3] * bluemult);
+            int c = data[0];
+            // Logic
+            if (c > ywcutoff)
+            {
+                double bluecomp = b / ((r + g) / (2.0));
+                if (bluecomp < bluecompcheck) return 3;
+                return 4;
+            }
+            int max = Math.Max(Math.Max(r, g), b);
+            if (r == max)
+                return 0;
+            if (g == max)
+                return 1;
+            if (b == max)
+                return 2;
+            // Something went wrong here...
+            return -1;
+        }
+
+        // Rotates the turntable to a given position (in terms of block)
+        // angle = 0 - 360
+        private void rotateTurntable(int angle)
+        {
+            // 360 degree turntable, 5 blocks, 72 degree difference
+            if (angle < 0 || angle > 360)
+                throw new InvalidOperationException("Invalid turntable angle");
+            debug("Rotating to " + angle + "\r\n");
+            sendToMBED("s,2,1," + angle);
+        }
+
+        // Finds the correct colour on the turntable based on the colour given
+        private bool findColour(int block)
+        {
+            debug("Looking for block " + coltotext[block] + "\r\n");
+            // Rotate to 0
+            rotateTurntable(0);
+            // Turntable is at start, block not yet found
+            int rotatecount = 0;
+            bool found = false;
+            do
+            {
+                // Check block colour
+                int col = getColour();
+                // If correct the right block has been found, continue
+                if (col == block)
+                    found = true;
+                else
+                {
+                    // Otherwise rotate once, provided all blocks haven't been checked
+                    rotatecount++;
+                    if (rotatecount < 5)
+                        rotateTurntable(rotatecount * 72);
+                }
+            } while (rotatecount < 5 && !found);        // Check if 5 or 4
+            return found;
+        }
+
+        // Takes an input of the form "x,#,[...]" and returns an integer array, one entry per value
+        private int[] processReadings(string readings)
+        {
+            string[] individual = readings.Split(',');
+            int[] vals = new int[Int32.Parse(individual[1])];
+            for (int i = 0; i < vals.Length; i++)
+            {
+                vals[i] = Int32.Parse(individual[i + 2]);
+            }
+            return vals;
         }
 
         // Close the program
@@ -129,111 +332,47 @@ namespace AlienGUIPrototype
         // Select a predefined task
         private void b_task_Click(object sender, EventArgs e)
         {
-            String selected = cb_taskselect.SelectedText;//cb_taskselect.SelectedItem.ToString();
+            String selected = cb_taskselect.SelectedItem.ToString();
             try
             {
                 if (comconnected)
                     switch (selected)
                     {
                         case "Find Red":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            findColour(0);
                             break;
                         case "Find Green":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            findColour(1);
                             break;
                         case "Find Blue":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            findColour(2);
                             break;
                         case "Find Yellow":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            findColour(3);
                             break;
                         case "Find White":
-                            tb_debug.AppendText("Unimplemented task\r\n");
+                            findColour(4);
                             break;
                         case "Test Distance":
-                            tb_debug.AppendText("Unimplemented task\r\n");
-                            break;
-                        case "Rotate Turntable Once":
-                            try
-                            {
-                                tb_debug.AppendText("Sending rotation command");
-                                sendToMBED("s,0,72");
-                                tb_debug.AppendText("Waiting for confirmation");
-                                string message = readFromMBED();
-                                switch (message[0])
-                                {
-                                    case 'a':
-                                        tb_debug.AppendText("Success\r\n");
-                                        break;
-                                    case 'f':
-                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
-                                        break;
-                                    default:
-                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
-                                        break;
-                                }
-                                tb_debug.AppendText("Operation complete");
-                            }
-                            catch (Exception ex)
-                            {
-                                tb_debug.AppendText("Error in operation: \r\n" + ex.Message + "\r\n");
-                            }
-                            break;
-                        case "Activate Pusher":
-                            try
-                            {
-                                tb_debug.AppendText("Sending push command");
-                                sendToMBED("s,1,80");
-                                tb_debug.AppendText("Waiting for confirmation");
-                                string message = readFromMBED();
-                                switch (message[0])
-                                {
-                                    case 'a':
-                                        tb_debug.AppendText("Success\r\n");
-                                        break;
-                                    case 'f':
-                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
-                                        return;
-                                    default:
-                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
-                                        return;
-                                }
-                                tb_debug.AppendText("Sending return command");
-                                sendToMBED("s,1,0");
-                                tb_debug.AppendText("Waiting for confirmation");
-                                message = readFromMBED();
-                                switch (message[0])
-                                {
-                                    case 'a':
-                                        tb_debug.AppendText("Success\r\n");
-                                        break;
-                                    case 'f':
-                                        tb_debug.AppendText("Something went wrong:\r\n " + message + "\r\n");
-                                        return;
-                                    default:
-                                        tb_debug.AppendText("Unexpected message:\r\n " + message + "\r\n");
-                                        return;
-                                }
-                                tb_debug.AppendText("Operation complete");
-                            }
-                            catch (Exception ex)
-                            {
-                                tb_debug.AppendText("Error in operation: \r\n" + ex.Message + "\r\n");
-                            }
+                            sendToMBED("d,0");
+                            int distance = processReadings(readFromMBED())[0];
+                            if (distance < 255)
+                                debug("In range.\r\n");
+                            else
+                                debug("Out of range.\r\n");
                             break;
                         default:
                             break;
                     }
-                else tb_debug.AppendText("Please select a COM port and connnect.\r\n");
+                else debug("Please select a COM port and connnect.\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("\r\nError in operation:\r\n  ");
-                tb_debug.AppendText(ex.Message + "\r\n");
+                debug("Error in operation:" + ex.Message + "\r\n");
             }
             catch (InvalidOperationException exep)
             {
-                tb_debug.AppendText("\r\n" + exep.Message + "\r\n");
+                debug("Invalid operation:" + exep.Message + "\r\n");
             }
         }
 
@@ -241,15 +380,15 @@ namespace AlienGUIPrototype
         private void b_refreshcom_Click(object sender, EventArgs e)
         {
             cb_portselect.Items.Clear();
-            tb_debug.AppendText("Available Ports:\r\n");
+            debug("Available Ports:\r\n");
             foreach (string s in SerialPort.GetPortNames())
             {
                 cb_portselect.Items.Add(s);
-                tb_debug.AppendText(s + "\r\n");
+                debug(s + "\r\n");
             }
             if (SerialPort.GetPortNames().Length == 0)
             {
-                tb_debug.AppendText("none\r\n");
+                debug("none\r\n");
                 cb_portselect.SelectedIndex = -1;
                 cb_portselect.Text = "";
             }
@@ -260,107 +399,26 @@ namespace AlienGUIPrototype
             //Thread.Sleep(2000);   // sleep 2 seconds
         }
 
-        // Attempt to connect with the selected COM port, return true or false based on success
-        private bool establishCOMConnection()
-        {
-            try
-            {
-                if (comconnected)
-                    serialPort1.Close();
-                if (cb_portselect.Items.Count == 0) return false;
-                string portname = cb_portselect.SelectedItem.ToString();
-                serialPort1.PortName = portname;
-                serialPort1.Open();
-                return true;
-            }
-            catch (IOException e)
-            {
-                tb_debug.AppendText(e.ToString() + "\r\n");
-                return false;
-            }
-        }
-
         // Call establishCOMConnection, print debug information based on success or failure
         private void b_comconnect_Click(object sender, EventArgs e)
         {
-            comconnected = establishCOMConnection();
-            if (comconnected)
+            try
             {
-                tb_debug.AppendText("Connected to COM port " + cb_portselect.SelectedItem.ToString() + "\r\n");
-            }
-            else
-            {
-                tb_debug.AppendText("Failed to connect to COM port.\r\n");
-            }
-        }
-
-        // Takes an input of the form "x,#,[...]" and returns an integer array, one entry per value
-        private int[] processReadings(string readings)
-        {
-            string[] individual = readings.Split(',');
-            int[] vals = new int[Int32.Parse(individual[1])];
-            for (int i = 0; i < vals.Length; i++)
-            {
-                vals[i] = Int32.Parse(individual[i + 2]);
-            }
-            return vals;
-        }
-
-        // Sends a message to the MBED, throws IOException if not connected to a COM port, //prints exact command sent
-        private void sendToMBED(string message)
-        {
-            if (!comconnected)
-                throw new IOException("Not connected to a COM port.");
-            //tb_debug.AppendText("Sending command: " + message + "\r\n");
-            serialPort1.WriteLine(message);
-        }
-
-        // Reads the next line from the MBED, returns string. Tries (attempts) times with (delay)ms gap between each. Throws exception if failure.
-        private string readFromMBED(int attempts = 3000, int delay = 5)
-        {
-            string lastmessage = null;
-            int messagecount = 0;
-            tb_debug.AppendText("Attempts:" + attempts + ", delay:" + delay + "\r\n");
-            if (!comconnected)
-                throw new IOException("Not connected to a COM port.");
-            string portIn = "";
-            for (int i = 0; i < attempts; i++)
-            {
-                try
+                string portname = cb_portselect.SelectedItem.ToString();
+                comconnected = establishCOMConnection(portname);
+                if (comconnected)
                 {
-                    // Attempt to get input line
-                    portIn = serialPort1.ReadLine();
-                    // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return message.
-                    while (portIn[0] == 'm')
-                    {
-                        if (Equals(portIn, lastmessage))
-                        {
-                            if (messagecount == 1)
-                                tb_debug.AppendText("...");
-                            messagecount++;
-                        }
-                        else
-                        {
-                            if (messagecount > 1)
-                                tb_debug.AppendText("x " + messagecount + "\r\n");
-                            messagecount = 1;
-                            if (cb_mtoggle.Checked)
-                                tb_debug.AppendText("Message: " + portIn + "\r\n");
-                        }
-                        portIn = serialPort1.ReadLine();
-                    }
-                    return portIn;
+                    debug("Connected to COM port " + portname + "\r\n");
                 }
-                catch (IOException e)
+                else
                 {
+                    debug("Failed to connect to COM port.\r\n");
                 }
-                catch (InvalidOperationException e)
-                {
-                    return "Port disconnected";
-                }
-                Thread.Sleep(delay);
             }
-            throw new TimeoutException("No input from port in designated time.\r\n");
+            catch (NullReferenceException ex)
+            {
+                debug("Invalid port name.\r\n");
+            }
         }
 
         // Read colour from MBED, print output
@@ -372,7 +430,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to request colour information:\r\n" + ex.Message + "\r\n");
+                debug("Failed to request colour information:\r\n" + ex.Message + "\r\n");
                 return;
             }
             try
@@ -381,49 +439,47 @@ namespace AlienGUIPrototype
                 if (char.Equals(message[0], 'c'))
                 {
                     int[] vals = processReadings(message);
-                    tb_debug.AppendText("Colour readings:\r\n c:" + vals[0] + ", r:" + vals[1] + ", g:" + vals[2] + ", b:" + vals[3] + "\r\n");
+                    debug("Colour readings:\r\n c:" + vals[0] + ", r:" + vals[1] + ", g:" + vals[2] + ", b:" + vals[3] + "\r\n");
                 }
                 else
                 {
-                    tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
+                    debug("Unexpected message:\r\n  " + message + "\r\n");
                 }
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to read colour from port:\r\n  " + ex.Message + "\r\n");
+                debug("Failed to read colour from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
         // Read distance from MBED, print output
         private void b_readdistance_Click(object sender, EventArgs e)
         {
+            try
             {
-                try
+                sendToMBED("d,0");
+            }
+            catch (Exception ex)
+            {
+                debug("Failed to request distance information:\r\n" + ex.Message + "\r\n");
+                return;
+            }
+            try
+            {
+                string message = readFromMBED();
+                if (char.Equals(message[0], 'd'))
                 {
-                    sendToMBED("d,0");
+                    int[] vals = processReadings(message);
+                    debug("Distance reading: " + vals[0] + "\r\n");
                 }
-                catch (Exception ex)
+                else
                 {
-                    tb_debug.AppendText("Failed to request distance information:\r\n" + ex.Message + "\r\n");
-                    return;
+                    debug("Unexpected message:\r\n  " + message + "\r\n");
                 }
-                try
-                {
-                    string message = readFromMBED();
-                    if (char.Equals(message[0], 'd'))
-                    {
-                        int[] vals = processReadings(message);
-                        tb_debug.AppendText("Distance reading: " + vals[0] + "\r\n");
-                    }
-                    else
-                    {
-                        tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    tb_debug.AppendText("Failed to read distance from port:\r\n  " + ex.Message + "\r\n");
-                }
+            }
+            catch (Exception ex)
+            {
+                debug("Failed to read distance from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
@@ -436,7 +492,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to request sensor information:\r\n" + ex.Message + "\r\n");
+                debug("Failed to request sensor information:\r\n" + ex.Message + "\r\n");
                 return;
             }
             try
@@ -445,16 +501,16 @@ namespace AlienGUIPrototype
                 if (char.Equals(message[0], 'r'))
                 {
                     int[] vals = processReadings(message);
-                    tb_debug.AppendText("Sensor readings:\r\n dist:" + vals[0] + ", c:" + vals[1] + ", r:" + vals[2] + ", g:" + vals[3] + ", b:" + vals[4] + "\r\n");
+                    debug("Sensor readings:\r\n dist:" + vals[0] + ", c:" + vals[1] + ", r:" + vals[2] + ", g:" + vals[3] + ", b:" + vals[4] + "\r\n");
                 }
                 else
                 {
-                    tb_debug.AppendText("Unexpected message:\r\n  " + message + "\r\n");
+                    debug("Unexpected message:\r\n  " + message + "\r\n");
                 }
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to read sensors from port:\r\n  " + ex.Message + "\r\n");
+                debug("Failed to read sensors from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
@@ -468,7 +524,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to request turntable movement:\r\n" + ex.Message + "\r\n");
+                debug("Failed to request turntable movement:\r\n" + ex.Message + "\r\n");
                 return;
             }
             try
@@ -477,23 +533,23 @@ namespace AlienGUIPrototype
                 switch (message[0])
                 {
                     case 'a':
-                        tb_debug.AppendText("Task completed successfully.\r\n");
+                        debug("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
+                        debug("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
-                        tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
+                        debug("Unexpected message received:\r\n  " + message + "\r\n");
                         break;
                 }
             }
             catch (TimeoutException ex)
             {
-                tb_debug.AppendText("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
+                debug("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("Failed to read from port:\r\n  " + ex.Message + "\r\n");
+                debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
@@ -506,7 +562,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
+                debug("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
                 return;
             }
             try
@@ -515,23 +571,23 @@ namespace AlienGUIPrototype
                 switch (message[0])
                 {
                     case 'a':
-                        tb_debug.AppendText("Task completed successfully.\r\n");
+                        debug("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
+                        debug("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
-                        tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
+                        debug("Unexpected message received:\r\n  " + message + "\r\n");
                         break;
                 }
             }
             catch (TimeoutException ex)
             {
-                tb_debug.AppendText("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
+                debug("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("Failed to read from port:\r\n  " + ex.Message + "\r\n");
+                debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
@@ -544,7 +600,7 @@ namespace AlienGUIPrototype
             }
             catch (Exception ex)
             {
-                tb_debug.AppendText("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
+                debug("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
                 return;
             }
             try
@@ -553,32 +609,39 @@ namespace AlienGUIPrototype
                 switch (message[0])
                 {
                     case 'a':
-                        tb_debug.AppendText("Task completed successfully.\r\n");
+                        debug("Task completed successfully.\r\n");
                         break;
                     case 'f':
-                        tb_debug.AppendText("Failed to complete task: " + message + "\r\n");
+                        debug("Failed to complete task: " + message + "\r\n");
                         break;
                     default:
-                        tb_debug.AppendText("Unexpected message received:\r\n  " + message + "\r\n");
+                        debug("Unexpected message received:\r\n  " + message + "\r\n");
                         break;
                 }
             }
             catch (TimeoutException ex)
             {
-                tb_debug.AppendText("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
+                debug("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
             }
             catch (IOException ex)
             {
-                tb_debug.AppendText("Failed to read from port:\r\n  " + ex.Message + "\r\n");
+                debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
         }
 
         // Send manually formed command
         private void b_sendcommand_Click(object sender, EventArgs e)
         {
-            sendToMBED(tb_command.Text);
-            string message = readFromMBED();
-            tb_debug.AppendText("Return: " + message + "\r\n");
+            try
+            {
+                sendToMBED(tb_command.Text);
+                string message = readFromMBED();
+                debug("Return: " + message + "\r\n");
+            }
+            catch (Exception ex)
+            {
+                debug("Error in sending command:" + ex.Message + "\r\n");
+            }
         }
 
         // Text-to-speech for typed text
@@ -588,7 +651,6 @@ namespace AlienGUIPrototype
         }
 
         // Operation mode output - includes text and (if enabled) voice
-        // TODO - read from language list
         private void outputToUser(int text)
         {
             // 0  - error
@@ -604,74 +666,87 @@ namespace AlienGUIPrototype
             // 10 - waiting for robot
             // 11 - pushing block
             // 12 - robot leaves
+            // 13 - connecting to alien
             tb_output.AppendText(messages[text, language, 0]);
             if (speechenabled)
                 speak.Speak(messages[text, language, 1]);
         }
 
         // Operation mode start button
-        // TODO - implement full operation
+        // TODO - test full operation
         private void b_start_Click(object sender, EventArgs e)
         {
-            // Refresh port list
-            b_refreshcom_Click(null, null);
-            // Connect to alien
-            b_comconnect_Click(null, null);
-            // Parse block request
-            int block = cb_colourchoice.SelectedIndex - 1;
-            tb_debug.AppendText("Block number:" + block + "\r\n");
-            string message;
-            outputToUser(6);
-            outputToUser(block);
-            outputToUser(7);
-            // Check for block, rotate if wrong, do 5 times
-            //      Output error if not found
-            // Wait for turtle
-            outputToUser(10);
-            bool turtlehere = false;
-            for (int i = 0; i < 20; i++)
+            // Try/catch entire operation - possible errors thrown when reading to/writing from MBED
+            try
             {
-                sendToMBED("c,0");
-                message = readFromMBED();
-                if (message[0] != 'd')
+                // Connect to alien
+                outputToUser(13);                           // "Connecting to alien..."
+                if (!establishCOMConnection("COM3"))        // Failure
                 {
-                    outputToUser(0);
-                    tb_debug.AppendText("Distance error:" + message + "\r\n");
+                    throw new IOException("COM connection failed");
+                }
+                // Parse block request
+                int block = cb_colourchoice.SelectedIndex - 1;
+                debug("Block number:" + block + "\r\n");
+                string message;
+                outputToUser(6);                            // "Trying to find the
+                outputToUser(block);                        // colour
+                outputToUser(7);                            // block."
+                bool found = findColour(block);
+                if (!found)
+                {
+                    outputToUser(8);                        // Sorry, I couldn't find the
+                    outputToUser(block);                    // colour
+                    outputToUser(9);                        // block.
                     return;
                 }
-                int[] data = processReadings(message);
-                if (data[0] < 85)
+                // Wait for turtle
+                outputToUser(10);                           // "Waiting for the robot."
+                bool turtlehere = false;
+                for (int i = 0; i < 20; i++)
                 {
-                    turtlehere = true;
-                    break;
+                    sendToMBED("d,0");
+                    message = readFromMBED();
+                    if (message[0] != 'd')
+                    {
+                        debug("Distance error:" + message + "\r\n");
+                        throw new IOException("Incorrect message recieved");
+                    }
+                    int[] data = processReadings(message);
+                    if (data[0] < 85)
+                    {
+                        turtlehere = true;
+                        break;
+                    }
                 }
-            }
-            if (!turtlehere)
-            {
-                outputToUser(0);
-                tb_debug.AppendText("Did not sense turtle in time.\r\n");
+                if (!turtlehere)
+                {
+                    throw new TimeoutException("Did not find robot in time");
+                }
+                // Push right block
+                outputToUser(11);                           // "Ah, here it is. Here you go, friend."
+                sendToMBED("s,2,0,1");
+                message = readFromMBED();
+                if (message[0] != 'a')
+                    throw new IOException("Unexpected message when extending: " + message);
+                // Retract
+                sendToMBED("s,2,0,0");
+                message = readFromMBED();
+                if (message[0] != 'a')
+                    throw new IOException("Unexpected message when retracting: " + message);
+                // Finished
+                outputToUser(12);                           // "Bye-bye now!"
                 return;
             }
-            // Push right block
-            sendToMBED("s,2,0,1");
-            message = readFromMBED();
-            if (message[0] != 'a')
+            catch (TimeoutException ex)
             {
-                outputToUser(0);
-                tb_debug.AppendText("Error from pushing:" + message + "\r\n");
-                return;
+                debug("Timeout exception:\r\n" + ex.Message + "\r\n");
             }
-            // Retract
-            sendToMBED("s,2,0,0");
-            message = readFromMBED();
-            if (message[0] != 'a')
+            catch (IOException ex)
             {
-                outputToUser(0);
-                tb_debug.AppendText("Error from retracting:" + message + "\r\n");
-                return;
+                debug("IO exception:\r\n" + ex.Message + "\r\n");
             }
-            // Finished
-            // TODO - confirmation to user
+            outputToUser(0);                                // Returns before this point if no exceptions are thrown
         }
 
         // Operation mode combobox, greys out start if index 0
@@ -685,12 +760,13 @@ namespace AlienGUIPrototype
         {
             speechenabled = !speechenabled;
             if (speechenabled)
-                ms_togglevoice.Text = "Disable Voice";
+                ms_togglevoice.Text = guitext[13, language];
             else
-                ms_togglevoice.Text = "Enable Voice";
+                ms_togglevoice.Text = guitext[12, language];
         }
 
         // Language selection - called when *any* language choice is selected
+        // Used to make menu items act similarly to radiobuttons
         // Code modified from http://csharphelper.com/blog/2014/08/make-menu-items-act-like-radio-buttons-in-c/
         private void selectLanguage(ToolStripMenuItem menu, ToolStripMenuItem checked_item)
         {
@@ -698,8 +774,7 @@ namespace AlienGUIPrototype
             {
                 if (item is ToolStripMenuItem)
                 {
-                    ToolStripMenuItem menu_item =
-                        item as ToolStripMenuItem;
+                    ToolStripMenuItem menu_item = item as ToolStripMenuItem;
                     menu_item.Checked = (menu_item == checked_item);
                 }
             }
@@ -712,14 +787,18 @@ namespace AlienGUIPrototype
             changeLanguage(0);
         }
 
-        // 'Other' selected
-        // TODO - implement actual languages
+        // Italian selected
         private void ml_language_italian_Click(object sender, EventArgs e)
         {
             selectLanguage(ms_language, ml_language_italian);
             changeLanguage(1);
         }
 
-
+        // Bulgarian selected
+        private void ml_language_bulgarian_Click(object sender, EventArgs e)
+        {
+            selectLanguage(ms_language, ml_language_bulgarian);
+            changeLanguage(2);
+        }
     }
 }
