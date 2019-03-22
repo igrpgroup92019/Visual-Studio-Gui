@@ -42,6 +42,7 @@
             this.ms_language = new System.Windows.Forms.ToolStripMenuItem();
             this.ml_language_english = new System.Windows.Forms.ToolStripMenuItem();
             this.ml_language_italian = new System.Windows.Forms.ToolStripMenuItem();
+            this.ml_language_bulgarian = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_debug = new System.Windows.Forms.TextBox();
             this.gb_servos = new System.Windows.Forms.GroupBox();
             this.l_pusher = new System.Windows.Forms.Label();
@@ -63,6 +64,7 @@
             this.l_comselect = new System.Windows.Forms.Label();
             this.cb_portselect = new System.Windows.Forms.ComboBox();
             this.p_maintenance = new System.Windows.Forms.Panel();
+            this.b_colourguess = new System.Windows.Forms.Button();
             this.cb_mtoggle = new System.Windows.Forms.CheckBox();
             this.gb_manualcommand = new System.Windows.Forms.GroupBox();
             this.b_sendcommand = new System.Windows.Forms.Button();
@@ -71,7 +73,7 @@
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
-            this.ml_language_bulgarian = new System.Windows.Forms.ToolStripMenuItem();
+            this.b_comclear = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -189,7 +191,7 @@
             // ms_togglevoice
             // 
             this.ms_togglevoice.Name = "ms_togglevoice";
-            this.ms_togglevoice.Size = new System.Drawing.Size(216, 26);
+            this.ms_togglevoice.Size = new System.Drawing.Size(169, 26);
             this.ms_togglevoice.Text = "Enable Voice";
             this.ms_togglevoice.Click += new System.EventHandler(this.ms_togglevoice_Click);
             // 
@@ -200,7 +202,7 @@
             this.ml_language_italian,
             this.ml_language_bulgarian});
             this.ms_language.Name = "ms_language";
-            this.ms_language.Size = new System.Drawing.Size(216, 26);
+            this.ms_language.Size = new System.Drawing.Size(169, 26);
             this.ms_language.Text = "Language";
             // 
             // ml_language_english
@@ -208,16 +210,23 @@
             this.ml_language_english.Checked = true;
             this.ml_language_english.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ml_language_english.Name = "ml_language_english";
-            this.ml_language_english.Size = new System.Drawing.Size(216, 26);
+            this.ml_language_english.Size = new System.Drawing.Size(156, 26);
             this.ml_language_english.Text = "English";
             this.ml_language_english.Click += new System.EventHandler(this.ml_language_english_Click);
             // 
             // ml_language_italian
             // 
             this.ml_language_italian.Name = "ml_language_italian";
-            this.ml_language_italian.Size = new System.Drawing.Size(216, 26);
+            this.ml_language_italian.Size = new System.Drawing.Size(156, 26);
             this.ml_language_italian.Text = "Italiano";
             this.ml_language_italian.Click += new System.EventHandler(this.ml_language_italian_Click);
+            // 
+            // ml_language_bulgarian
+            // 
+            this.ml_language_bulgarian.Name = "ml_language_bulgarian";
+            this.ml_language_bulgarian.Size = new System.Drawing.Size(156, 26);
+            this.ml_language_bulgarian.Text = "български";
+            this.ml_language_bulgarian.Click += new System.EventHandler(this.ml_language_bulgarian_Click);
             // 
             // tb_debug
             // 
@@ -383,6 +392,7 @@
             // 
             // gb_com
             // 
+            this.gb_com.Controls.Add(this.b_comclear);
             this.gb_com.Controls.Add(this.b_comconnect);
             this.gb_com.Controls.Add(this.b_refreshcom);
             this.gb_com.Controls.Add(this.l_comselect);
@@ -433,6 +443,7 @@
             // 
             // p_maintenance
             // 
+            this.p_maintenance.Controls.Add(this.b_colourguess);
             this.p_maintenance.Controls.Add(this.cb_mtoggle);
             this.p_maintenance.Controls.Add(this.gb_manualcommand);
             this.p_maintenance.Controls.Add(this.gb_speak);
@@ -446,6 +457,16 @@
             this.p_maintenance.Name = "p_maintenance";
             this.p_maintenance.Size = new System.Drawing.Size(1303, 464);
             this.p_maintenance.TabIndex = 1;
+            // 
+            // b_colourguess
+            // 
+            this.b_colourguess.Location = new System.Drawing.Point(955, 209);
+            this.b_colourguess.Name = "b_colourguess";
+            this.b_colourguess.Size = new System.Drawing.Size(136, 23);
+            this.b_colourguess.TabIndex = 14;
+            this.b_colourguess.Text = "Guess the Colour!";
+            this.b_colourguess.UseVisualStyleBackColor = true;
+            this.b_colourguess.Click += new System.EventHandler(this.b_colourguess_Click);
             // 
             // cb_mtoggle
             // 
@@ -525,12 +546,15 @@
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
             // 
-            // ml_language_bulgarian
+            // b_comclear
             // 
-            this.ml_language_bulgarian.Name = "ml_language_bulgarian";
-            this.ml_language_bulgarian.Size = new System.Drawing.Size(216, 26);
-            this.ml_language_bulgarian.Text = "български";
-            this.ml_language_bulgarian.Click += new System.EventHandler(this.ml_language_bulgarian_Click);
+            this.b_comclear.Location = new System.Drawing.Point(41, 122);
+            this.b_comclear.Name = "b_comclear";
+            this.b_comclear.Size = new System.Drawing.Size(202, 23);
+            this.b_comclear.TabIndex = 14;
+            this.b_comclear.Text = "Clear Communication";
+            this.b_comclear.UseVisualStyleBackColor = true;
+            this.b_comclear.Click += new System.EventHandler(this.b_comclear_Click);
             // 
             // Form1
             // 
@@ -612,6 +636,8 @@
         private System.Windows.Forms.Button b_push;
         private System.Windows.Forms.CheckBox cb_mtoggle;
         private System.Windows.Forms.ToolStripMenuItem ml_language_bulgarian;
+        private System.Windows.Forms.Button b_colourguess;
+        private System.Windows.Forms.Button b_comclear;
     }
 }
 

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.IO;                // Added for IO exception
 using System.IO.Ports;          // Added for serial ports
 using System.Threading;         // Added for sleep
+using System.Diagnostics;       // Added for stopwatch
 using System.Speech.Synthesis;  // Added for speech
 
 namespace AlienGUIPrototype
@@ -166,45 +167,57 @@ namespace AlienGUIPrototype
             serialPort1.WriteLine(message);
         }
 
-        // Reads the next line from the MBED, returns string. Tries (attempts) times with (delay)ms gap between each. Throws IOException if
+        // Reads the next line from the MBED, returns string. Tries for (time) ms with (delay)ms delay between each. Throws IOException if
         // not connected, TimeoutException if times out.
-        private string readFromMBED(int attempts = 3000, int delay = 5)
+        private string readFromMBED(int time = 15000, int delay = 5)
         {
             //debug("Attempts:" + attempts + ", delay:" + delay + "\r\n");
             if (!comconnected)
                 throw new IOException("Not connected to a COM port.");
             string portIn = "";
-            for (int i = 0; i < attempts; i++)
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < time)
             {
                 try
                 {
                     // Attempt to get input line
                     portIn = serialPort1.ReadLine();
-                    // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return message.
-                    while (portIn[0] == 'm' || !isValidCommand(portIn))
+                    // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return valid message.
+                    while (!isValidCommand(portIn))
                     {
+                        if (portIn.Length == 0)
+                            debug("Empty message received.\r\n");
                         if (cb_mtoggle.Checked && portIn[0] == 'm')
                             debug("Message: " + portIn + "\r\n");
                         else if (portIn[0] != 'm')
                             debug("Unexpected message: " + portIn + "\r\n");
                         portIn = serialPort1.ReadLine();
                     }
+                    stopwatch.Stop();
                     return portIn;
                 }
                 catch (IOException e)
                 {
+                    // Ignore
                 }
                 catch (InvalidOperationException e)
                 {
+                    // Only thrown when disconnected mid-operation?
+                    stopwatch.Stop();
                     throw new IOException("Port disconnected");
                 }
                 Thread.Sleep(delay);
             }
+            stopwatch.Stop();
             throw new TimeoutException("No input from port in designated time.\r\n");
         }
 
+        // Checks for message length and first character in message, true if valid (and non-m) command
         private bool isValidCommand(string message)
         {
+            if (message.Length == 0)
+                return false;
             char m = message[0];
             return m == 'a' || m == 'f' || m == 'c' || m == 'd' || m == 'r';
         }
@@ -216,7 +229,7 @@ namespace AlienGUIPrototype
         // 2 - blue
         // 3 - yellow
         // 4 - white
-        // TODO - fix colour logic variables so they work with the actual environment
+        // TODO - more tests
         private int getColour()
         {
             sendToMBED("c,0");
@@ -233,8 +246,8 @@ namespace AlienGUIPrototype
             // Logic for colour comparison
             // Variables
             double bluemult = 1.5;
-            int ywcutoff = 290;
-            double bluecompcheck = 0.85;
+            int ywcutoff = 145;
+            double bluecompcheck = 0.75;
             int r = data[1];
             int g = data[2];
             int b = Convert.ToInt32(data[3] * bluemult);
@@ -283,6 +296,7 @@ namespace AlienGUIPrototype
             do
             {
                 // Check block colour
+                Thread.Sleep(1000);
                 int col = getColour();
                 // If correct the right block has been found, continue
                 if (col == block)
@@ -427,6 +441,24 @@ namespace AlienGUIPrototype
             }
         }
 
+        // Clears all data on serial port line
+        private void b_comclear_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                while (true)
+                {
+                    string portIn = serialPort1.ReadLine();
+                    if (portIn.Length == 0)
+                        return;
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
+
         // Read colour from MBED, print output
         private void b_readcolour_Click(object sender, EventArgs e)
         {
@@ -535,7 +567,7 @@ namespace AlienGUIPrototype
             }
             try
             {
-                string message = readFromMBED(3000, 5);
+                string message = readFromMBED();
                 switch (message[0])
                 {
                     case 'a':
@@ -573,7 +605,7 @@ namespace AlienGUIPrototype
             }
             try
             {
-                string message = readFromMBED(3000, 5);
+                string message = readFromMBED();
                 switch (message[0])
                 {
                     case 'a':
@@ -595,6 +627,10 @@ namespace AlienGUIPrototype
             {
                 debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
             }
+            Thread.Sleep(1000);
+            b_pull_Click(null, null);
+            Thread.Sleep(1020);
+            rotateTurntable(0);
         }
 
         // Retract pusher
@@ -650,6 +686,23 @@ namespace AlienGUIPrototype
             }
         }
 
+        // Takes colour reading, prints colour guess
+        private void b_colourguess_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int col = getColour();
+                if (col == -1)
+                    debug("I have no clue honestly.\r\n");
+                else
+                    debug("I think the colour is " + coltotext[col] + ".\r\n");
+            }
+            catch (Exception ex)
+            {
+                debug("Exception: " + ex.Message + "\r\n");
+            }
+        }
+
         // Text-to-speech for typed text
         private void b_speak_Click(object sender, EventArgs e)
         {
@@ -698,20 +751,22 @@ namespace AlienGUIPrototype
                 debug("Block number:" + block + "\r\n");
                 string message;
                 outputToUser(6);                            // "Trying to find the
-                outputToUser(block);                        // colour
+                outputToUser(block + 1);                    // colour
                 outputToUser(7);                            // block."
                 bool found = findColour(block);
                 if (!found)
                 {
                     outputToUser(8);                        // Sorry, I couldn't find the
-                    outputToUser(block);                    // colour
+                    outputToUser(block + 1);                // colour
                     outputToUser(9);                        // block.
                     return;
                 }
                 // Wait for turtle
                 outputToUser(10);                           // "Waiting for the robot."
                 bool turtlehere = false;
-                for (int i = 0; i < 20; i++)
+                Stopwatch turtlewait = new Stopwatch();
+                turtlewait.Start();
+                while (!turtlehere)
                 {
                     sendToMBED("d,0");
                     message = readFromMBED();
@@ -721,27 +776,15 @@ namespace AlienGUIPrototype
                         throw new IOException("Incorrect message recieved");
                     }
                     int[] data = processReadings(message);
-                    if (data[0] < 85)
-                    {
-                        turtlehere = true;
-                        break;
-                    }
+                    turtlehere = data[0] < 255;
                 }
                 if (!turtlehere)
                 {
                     throw new TimeoutException("Did not find robot in time");
                 }
-                // Push right block
+                // Push and retract
                 outputToUser(11);                           // "Ah, here it is. Here you go, friend."
-                sendToMBED("s,2,0,1");
-                message = readFromMBED();
-                if (message[0] != 'a')
-                    throw new IOException("Unexpected message when extending: " + message);
-                // Retract
-                sendToMBED("s,2,0,0");
-                message = readFromMBED();
-                if (message[0] != 'a')
-                    throw new IOException("Unexpected message when retracting: " + message);
+                b_push_Click(null, null);
                 // Finished
                 outputToUser(12);                           // "Bye-bye now!"
                 return;
@@ -812,5 +855,6 @@ namespace AlienGUIPrototype
             selectLanguage(ms_language, ml_language_bulgarian);
             changeLanguage(2);
         }
+
     }
 }
