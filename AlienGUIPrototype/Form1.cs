@@ -106,6 +106,7 @@ namespace AlienGUIPrototype
             b_comconnect_Click(null, null);
         }
 
+        // Debug message output
         private void debug(string text)
         {
             tb_debug.AppendText(text);
@@ -169,8 +170,6 @@ namespace AlienGUIPrototype
         // not connected, TimeoutException if times out.
         private string readFromMBED(int attempts = 3000, int delay = 5)
         {
-            string lastmessage = null;
-            int messagecount = 0;
             //debug("Attempts:" + attempts + ", delay:" + delay + "\r\n");
             if (!comconnected)
                 throw new IOException("Not connected to a COM port.");
@@ -182,22 +181,12 @@ namespace AlienGUIPrototype
                     // Attempt to get input line
                     portIn = serialPort1.ReadLine();
                     // If the first char is 'm' it's a print command, display in debug and continue searching. Otherwise return message.
-                    while (portIn[0] == 'm')
+                    while (portIn[0] == 'm' || !isValidCommand(portIn))
                     {
-                        if (Equals(portIn, lastmessage))
-                        {
-                            if (messagecount == 1)
-                                debug("...");
-                            messagecount++;
-                        }
-                        else
-                        {
-                            if (messagecount > 1)
-                                debug("x " + messagecount + "\r\n");
-                            messagecount = 1;
-                            if (cb_mtoggle.Checked)
-                                debug("Message: " + portIn + "\r\n");
-                        }
+                        if (cb_mtoggle.Checked && portIn[0] == 'm')
+                            debug("Message: " + portIn + "\r\n");
+                        else if (portIn[0] != 'm')
+                            debug("Unexpected message: " + portIn + "\r\n");
                         portIn = serialPort1.ReadLine();
                     }
                     return portIn;
@@ -214,6 +203,12 @@ namespace AlienGUIPrototype
             throw new TimeoutException("No input from port in designated time.\r\n");
         }
 
+        private bool isValidCommand(string message)
+        {
+            char m = message[0];
+            return m == 'a' || m == 'f' || m == 'c' || m == 'd' || m == 'r';
+        }
+
         // Returns index of colour in front of sensor, throws IOException if not connected, TimeoutException if times out
         // Colours
         // 0 - red
@@ -225,8 +220,16 @@ namespace AlienGUIPrototype
         private int getColour()
         {
             sendToMBED("c,0");
-            int[] data = processReadings(readFromMBED());
-            debug($"Colours read: c{data[0]} r{data[1]} g{data[2]} b{data[3]}\r\n");
+            string message = readFromMBED();
+            int[] data = processReadings(message);
+            try
+            {
+                debug($"Colours read: c{data[0]} r{data[1]} g{data[2]} b{data[3]}\r\n");
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                debug("Error with colour data: " + data.ToString() + "\r\n from message: " + message + "\r\n");
+            }
             // Logic for colour comparison
             // Variables
             double bluemult = 1.5;
@@ -263,6 +266,9 @@ namespace AlienGUIPrototype
                 throw new InvalidOperationException("Invalid turntable angle");
             debug("Rotating to " + angle + "\r\n");
             sendToMBED("s,2,1," + angle);
+            string message = readFromMBED();
+            if (message[0] != 'a')
+                throw new IOException("Turntable rotation failed: " + message);
         }
 
         // Finds the correct colour on the turntable based on the colour given
@@ -680,11 +686,13 @@ namespace AlienGUIPrototype
             try
             {
                 // Connect to alien
+                debug("Connecting to MBED\r\n");
                 outputToUser(13);                           // "Connecting to alien..."
                 if (!establishCOMConnection("COM3"))        // Failure
                 {
                     throw new IOException("COM connection failed");
                 }
+                debug("Connected\r\n");
                 // Parse block request
                 int block = cb_colourchoice.SelectedIndex - 1;
                 debug("Block number:" + block + "\r\n");
@@ -745,6 +753,10 @@ namespace AlienGUIPrototype
             catch (IOException ex)
             {
                 debug("IO exception:\r\n" + ex.Message + "\r\n");
+            }
+            catch (Exception ex)
+            {
+                debug("Exception:\r\n" + ex.Message + "\r\n");
             }
             outputToUser(0);                                // Returns before this point if no exceptions are thrown
         }
