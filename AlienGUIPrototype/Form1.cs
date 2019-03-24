@@ -67,7 +67,7 @@ namespace AlienGUIPrototype
             { "Disable voice",          "Disattiva voce",           "Деактивирай глас" },
             { "Language",               "Linguaggio",               "Език" } };
         // Used in debug output
-        static string[] coltotext = new string[] { "red", "green", "blue", "yellow", "white" };
+        static string[] coltotext = new string[] { "red", "green", "blue", "yellow", "white", "empty" };
 
 
         public Form1()
@@ -78,7 +78,6 @@ namespace AlienGUIPrototype
             mo_operation.Enabled = false;
             cb_colourchoice.SelectedIndex = 0;
             cb_taskselect.SelectedIndex = 0;
-            // Unimplemented button operations
             b_start.Enabled = false;
             // Other
             speak.SetOutputToDefaultAudioDevice();
@@ -229,6 +228,7 @@ namespace AlienGUIPrototype
         // 2 - blue
         // 3 - yellow
         // 4 - white
+        // 5 - null
         // TODO - more tests
         private int getColour()
         {
@@ -246,13 +246,16 @@ namespace AlienGUIPrototype
             // Logic for colour comparison
             // Variables
             double bluemult = 1.5;
-            int ywcutoff = 145;
+            int ywcutoff = 130;
             double bluecompcheck = 0.75;
+            int nullcutoff = 85;
             int r = data[1];
             int g = data[2];
             int b = Convert.ToInt32(data[3] * bluemult);
             int c = data[0];
             // Logic
+            if (c < nullcutoff)
+                return 5;
             if (c > ywcutoff)
             {
                 double bluecomp = b / ((r + g) / (2.0));
@@ -298,6 +301,7 @@ namespace AlienGUIPrototype
                 // Check block colour
                 Thread.Sleep(1000);
                 int col = getColour();
+                debug("Current colour is " + coltotext[col] + ".\r\n");
                 // If correct the right block has been found, continue
                 if (col == block)
                     found = true;
@@ -380,6 +384,19 @@ namespace AlienGUIPrototype
                                 debug("In range.\r\n");
                             else
                                 debug("Out of range.\r\n");
+                            break;
+                        case "List Colours":
+                            debug("Listing all colours:\r\n");
+                            rotateTurntable(0);
+                            for (int i = 0; i < 4; i++)
+                            {
+                                Thread.Sleep(1000);
+                                b_colourguess_Click(null, null);
+                                rotateTurntable((i + 1) * 72);
+                            }
+                            Thread.Sleep(1000);
+                            b_colourguess_Click(null, null);
+                            rotateTurntable(0);
                             break;
                         default:
                             break;
@@ -596,78 +613,45 @@ namespace AlienGUIPrototype
         {
             try
             {
+                debug("Sending push message.\r\n");
                 sendToMBED("s,2,0,1");
-            }
-            catch (Exception ex)
-            {
-                debug("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
-                return;
-            }
-            try
-            {
                 string message = readFromMBED();
                 switch (message[0])
                 {
                     case 'a':
-                        debug("Task completed successfully.\r\n");
+                        debug("Pushing...\r\n");
                         break;
                     case 'f':
-                        debug("Failed to complete task: " + message + "\r\n");
-                        break;
+                        debug("Failure: " + message + "\r\n");
+                        return;
                     default:
-                        debug("Unexpected message received:\r\n  " + message + "\r\n");
-                        break;
+                        debug("Unexpected message: " + message + "\r\n");
+                        return;
                 }
-            }
-            catch (TimeoutException ex)
-            {
-                debug("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
-            }
-            catch (IOException ex)
-            {
-                debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
-            }
-            Thread.Sleep(1000);
-            b_pull_Click(null, null);
-            Thread.Sleep(1020);
-            rotateTurntable(0);
-        }
-
-        // Retract pusher
-        private void b_pull_Click(object sender, EventArgs e)
-        {
-            try
-            {
+                Thread.Sleep(1000);
+                debug("Sending pull message.\r\n");
                 sendToMBED("s,2,0,0");
-            }
-            catch (Exception ex)
-            {
-                debug("Failed to request pusher movement:\r\n" + ex.Message + "\r\n");
-                return;
-            }
-            try
-            {
-                string message = readFromMBED();
+                message = readFromMBED();
                 switch (message[0])
                 {
                     case 'a':
-                        debug("Task completed successfully.\r\n");
+                        debug("Pushing...\r\n");
                         break;
                     case 'f':
-                        debug("Failed to complete task: " + message + "\r\n");
-                        break;
+                        debug("Failure: " + message + "\r\n");
+                        return;
                     default:
-                        debug("Unexpected message received:\r\n  " + message + "\r\n");
-                        break;
+                        debug("Unexpected message: " + message + "\r\n");
+                        return;
                 }
+                Thread.Sleep(1050);
+                debug("Rotating to 0.\r\n");
+                rotateTurntable(0);
+                debug("Push operation complete.\r\n");
             }
-            catch (TimeoutException ex)
+            catch (Exception ex)
             {
-                debug("Timeout when reading from port:\r\n  " + ex.Message + "\r\n");
-            }
-            catch (IOException ex)
-            {
-                debug("Failed to read from port:\r\n  " + ex.Message + "\r\n");
+                debug("Exception raised:\r\n" + ex.Message + "\r\n");
             }
         }
 
@@ -732,7 +716,6 @@ namespace AlienGUIPrototype
         }
 
         // Operation mode start button
-        // TODO - test full operation
         private void b_start_Click(object sender, EventArgs e)
         {
             // Try/catch entire operation - possible errors thrown when reading to/writing from MBED
@@ -741,8 +724,9 @@ namespace AlienGUIPrototype
                 // Connect to alien
                 debug("Connecting to MBED\r\n");
                 outputToUser(13);                           // "Connecting to alien..."
-                if (!establishCOMConnection("COM3"))        // Failure
+                if (!establishCOMConnection(cb_portselect.SelectedItem.ToString()))
                 {
+                    // Failure
                     throw new IOException("COM connection failed");
                 }
                 debug("Connected\r\n");
@@ -756,6 +740,7 @@ namespace AlienGUIPrototype
                 bool found = findColour(block);
                 if (!found)
                 {
+                    rotateTurntable(0);
                     outputToUser(8);                        // Sorry, I couldn't find the
                     outputToUser(block + 1);                // colour
                     outputToUser(9);                        // block.
@@ -764,8 +749,6 @@ namespace AlienGUIPrototype
                 // Wait for turtle
                 outputToUser(10);                           // "Waiting for the robot."
                 bool turtlehere = false;
-                Stopwatch turtlewait = new Stopwatch();
-                turtlewait.Start();
                 while (!turtlehere)
                 {
                     sendToMBED("d,0");

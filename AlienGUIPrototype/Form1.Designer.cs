@@ -47,7 +47,6 @@
             this.gb_servos = new System.Windows.Forms.GroupBox();
             this.l_pusher = new System.Windows.Forms.Label();
             this.l_turntable = new System.Windows.Forms.Label();
-            this.b_pull = new System.Windows.Forms.Button();
             this.b_push = new System.Windows.Forms.Button();
             this.b_turntableset = new System.Windows.Forms.Button();
             this.ud_servoangle = new System.Windows.Forms.NumericUpDown();
@@ -59,6 +58,7 @@
             this.b_task = new System.Windows.Forms.Button();
             this.cb_taskselect = new System.Windows.Forms.ComboBox();
             this.gb_com = new System.Windows.Forms.GroupBox();
+            this.b_comclear = new System.Windows.Forms.Button();
             this.b_comconnect = new System.Windows.Forms.Button();
             this.b_refreshcom = new System.Windows.Forms.Button();
             this.l_comselect = new System.Windows.Forms.Label();
@@ -73,7 +73,6 @@
             this.tb_speak = new System.Windows.Forms.TextBox();
             this.b_speak = new System.Windows.Forms.Button();
             this.l_speak = new System.Windows.Forms.Label();
-            this.b_comclear = new System.Windows.Forms.Button();
             this.p_operations.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_servos.SuspendLayout();
@@ -241,7 +240,6 @@
             // 
             this.gb_servos.Controls.Add(this.l_pusher);
             this.gb_servos.Controls.Add(this.l_turntable);
-            this.gb_servos.Controls.Add(this.b_pull);
             this.gb_servos.Controls.Add(this.b_push);
             this.gb_servos.Controls.Add(this.b_turntableset);
             this.gb_servos.Controls.Add(this.ud_servoangle);
@@ -270,23 +268,13 @@
             this.l_turntable.TabIndex = 11;
             this.l_turntable.Text = "Turntable";
             // 
-            // b_pull
-            // 
-            this.b_pull.Location = new System.Drawing.Point(113, 119);
-            this.b_pull.Name = "b_pull";
-            this.b_pull.Size = new System.Drawing.Size(87, 23);
-            this.b_pull.TabIndex = 10;
-            this.b_pull.Text = "Pull";
-            this.b_pull.UseVisualStyleBackColor = true;
-            this.b_pull.Click += new System.EventHandler(this.b_pull_Click);
-            // 
             // b_push
             // 
             this.b_push.Location = new System.Drawing.Point(9, 119);
             this.b_push.Name = "b_push";
             this.b_push.Size = new System.Drawing.Size(87, 23);
             this.b_push.TabIndex = 9;
-            this.b_push.Text = "Push";
+            this.b_push.Text = "Operate";
             this.b_push.UseVisualStyleBackColor = true;
             this.b_push.Click += new System.EventHandler(this.b_push_Click);
             // 
@@ -384,7 +372,8 @@
             "Find Blue",
             "Find Yellow",
             "Find White",
-            "Test Distance"});
+            "Test Distance",
+            "List Colours"});
             this.cb_taskselect.Location = new System.Drawing.Point(10, 38);
             this.cb_taskselect.Name = "cb_taskselect";
             this.cb_taskselect.Size = new System.Drawing.Size(265, 24);
@@ -403,6 +392,16 @@
             this.gb_com.TabIndex = 11;
             this.gb_com.TabStop = false;
             this.gb_com.Text = "COM Ports";
+            // 
+            // b_comclear
+            // 
+            this.b_comclear.Location = new System.Drawing.Point(41, 122);
+            this.b_comclear.Name = "b_comclear";
+            this.b_comclear.Size = new System.Drawing.Size(202, 23);
+            this.b_comclear.TabIndex = 14;
+            this.b_comclear.Text = "Clear Communication";
+            this.b_comclear.UseVisualStyleBackColor = true;
+            this.b_comclear.Click += new System.EventHandler(this.b_comclear_Click);
             // 
             // b_comconnect
             // 
@@ -471,13 +470,11 @@
             // cb_mtoggle
             // 
             this.cb_mtoggle.AutoSize = true;
-            this.cb_mtoggle.Checked = true;
-            this.cb_mtoggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_mtoggle.Location = new System.Drawing.Point(955, 167);
             this.cb_mtoggle.Name = "cb_mtoggle";
-            this.cb_mtoggle.Size = new System.Drawing.Size(126, 21);
+            this.cb_mtoggle.Size = new System.Drawing.Size(242, 21);
             this.cb_mtoggle.TabIndex = 13;
-            this.cb_mtoggle.Text = "Show M Output";
+            this.cb_mtoggle.Text = "Show MBED Operation Messages";
             this.cb_mtoggle.UseVisualStyleBackColor = true;
             // 
             // gb_manualcommand
@@ -545,16 +542,6 @@
             this.l_speak.Size = new System.Drawing.Size(35, 17);
             this.l_speak.TabIndex = 3;
             this.l_speak.Text = "Text";
-            // 
-            // b_comclear
-            // 
-            this.b_comclear.Location = new System.Drawing.Point(41, 122);
-            this.b_comclear.Name = "b_comclear";
-            this.b_comclear.Size = new System.Drawing.Size(202, 23);
-            this.b_comclear.TabIndex = 14;
-            this.b_comclear.Text = "Clear Communication";
-            this.b_comclear.UseVisualStyleBackColor = true;
-            this.b_comclear.Click += new System.EventHandler(this.b_comclear_Click);
             // 
             // Form1
             // 
@@ -632,7 +619,6 @@
         private System.Windows.Forms.TextBox tb_command;
         private System.Windows.Forms.Label l_pusher;
         private System.Windows.Forms.Label l_turntable;
-        private System.Windows.Forms.Button b_pull;
         private System.Windows.Forms.Button b_push;
         private System.Windows.Forms.CheckBox cb_mtoggle;
         private System.Windows.Forms.ToolStripMenuItem ml_language_bulgarian;
