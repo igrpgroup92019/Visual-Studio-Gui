@@ -87,6 +87,8 @@ namespace AlienGUIPrototype
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Set operation mode as default
+            mo_operation_Click(null, null);
             cb_portselect.Items.Clear();
             foreach (string s in SerialPort.GetPortNames())
             {
@@ -101,9 +103,6 @@ namespace AlienGUIPrototype
                 debug("No COM ports found.\r\n");
             }
             serialPort1.BaudRate = COM_BAUD;
-            // Temporary - for testing, saves 2 clicks
-            mo_maintenance_Click(null, null);
-            b_comconnect_Click(null, null);
         }
 
         // Debug message output
@@ -148,11 +147,12 @@ namespace AlienGUIPrototype
                 if (cb_portselect.Items.Count == 0) return false;
                 serialPort1.PortName = portname;
                 serialPort1.Open();
+                comconnected = true;
                 return true;
             }
             catch (IOException e)
             {
-                debug(e.ToString() + "\r\n");
+                debug("No COM ports available.\r\n");
                 return false;
             }
         }
@@ -338,6 +338,8 @@ namespace AlienGUIPrototype
         // Switch to maintenance mode
         private void mo_maintenance_Click(object sender, EventArgs e)
         {
+            this.Size = new System.Drawing.Size(892, 416);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             p_maintenance.Visible = true;
             p_operations.Visible = false;
             mo_maintenance.Enabled = false;
@@ -347,6 +349,8 @@ namespace AlienGUIPrototype
         // Switch to operations mode
         private void mo_operation_Click(object sender, EventArgs e)
         {
+            this.Size = new System.Drawing.Size(550, 416);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             p_maintenance.Visible = false;
             p_operations.Visible = true;
             mo_maintenance.Enabled = true;
@@ -721,15 +725,23 @@ namespace AlienGUIPrototype
             // Try/catch entire operation - possible errors thrown when reading to/writing from MBED
             try
             {
-                // Connect to alien
-                debug("Connecting to MBED\r\n");
-                outputToUser(13);                           // "Connecting to alien..."
-                if (!establishCOMConnection(cb_portselect.SelectedItem.ToString()))
+                // Connect to alien if not connected
+                if (!comconnected)
                 {
-                    // Failure
-                    throw new IOException("COM connection failed");
+                    debug("Refreshing COM ports\r\n");
+                    b_refreshcom_Click(null, null);
+                    if (cb_portselect.Items.Count == 0)
+                        throw new IOException("No COM ports available");
+                    string portname = cb_portselect.SelectedItem.ToString();
+                    debug("Connecting to port " + portname + "\r\n");
+                    outputToUser(13);                           // "Connecting to alien..."
+                    if (!establishCOMConnection(portname))
+                    {
+                        // Failure
+                        throw new IOException("COM connection failed");
+                    }
+                    debug("Connected\r\n");
                 }
-                debug("Connected\r\n");
                 // Parse block request
                 int block = cb_colourchoice.SelectedIndex - 1;
                 debug("Block number:" + block + "\r\n");

@@ -93,16 +93,17 @@
             this.p_operations.Dock = System.Windows.Forms.DockStyle.Fill;
             this.p_operations.Location = new System.Drawing.Point(0, 0);
             this.p_operations.Name = "p_operations";
-            this.p_operations.Size = new System.Drawing.Size(1303, 464);
+            this.p_operations.Size = new System.Drawing.Size(1183, 464);
             this.p_operations.TabIndex = 0;
             // 
             // tb_output
             // 
-            this.tb_output.Location = new System.Drawing.Point(549, 127);
+            this.tb_output.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_output.Location = new System.Drawing.Point(340, 52);
             this.tb_output.Multiline = true;
             this.tb_output.Name = "tb_output";
             this.tb_output.ReadOnly = true;
-            this.tb_output.Size = new System.Drawing.Size(317, 212);
+            this.tb_output.Size = new System.Drawing.Size(317, 375);
             this.tb_output.TabIndex = 4;
             // 
             // cb_colourchoice
@@ -110,6 +111,7 @@
             this.cb_colourchoice.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cb_colourchoice.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cb_colourchoice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_colourchoice.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_colourchoice.FormattingEnabled = true;
             this.cb_colourchoice.Items.AddRange(new object[] {
             "Select a colour...",
@@ -118,17 +120,18 @@
             "Blue",
             "Yellow",
             "White"});
-            this.cb_colourchoice.Location = new System.Drawing.Point(296, 159);
+            this.cb_colourchoice.Location = new System.Drawing.Point(102, 161);
             this.cb_colourchoice.Name = "cb_colourchoice";
-            this.cb_colourchoice.Size = new System.Drawing.Size(197, 24);
+            this.cb_colourchoice.Size = new System.Drawing.Size(197, 28);
             this.cb_colourchoice.TabIndex = 2;
             this.cb_colourchoice.SelectedIndexChanged += new System.EventHandler(this.cb_colourchoice_SelectedIndexChanged);
             // 
             // b_start
             // 
-            this.b_start.Location = new System.Drawing.Point(359, 233);
+            this.b_start.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.b_start.Location = new System.Drawing.Point(160, 204);
             this.b_start.Name = "b_start";
-            this.b_start.Size = new System.Drawing.Size(75, 23);
+            this.b_start.Size = new System.Drawing.Size(75, 34);
             this.b_start.TabIndex = 0;
             this.b_start.Text = "Start";
             this.b_start.UseVisualStyleBackColor = true;
@@ -142,7 +145,7 @@
             this.m_settings});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1303, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1183, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -233,7 +236,7 @@
             this.tb_debug.Multiline = true;
             this.tb_debug.Name = "tb_debug";
             this.tb_debug.ReadOnly = true;
-            this.tb_debug.Size = new System.Drawing.Size(431, 423);
+            this.tb_debug.Size = new System.Drawing.Size(431, 396);
             this.tb_debug.TabIndex = 5;
             // 
             // gb_servos
@@ -302,6 +305,7 @@
             // 
             // gb_inputs
             // 
+            this.gb_inputs.Controls.Add(this.b_colourguess);
             this.gb_inputs.Controls.Add(this.b_readall);
             this.gb_inputs.Controls.Add(this.b_readdistance);
             this.gb_inputs.Controls.Add(this.b_readcolour);
@@ -314,9 +318,9 @@
             // 
             // b_readall
             // 
-            this.b_readall.Location = new System.Drawing.Point(34, 97);
+            this.b_readall.Location = new System.Drawing.Point(9, 68);
             this.b_readall.Name = "b_readall";
-            this.b_readall.Size = new System.Drawing.Size(98, 23);
+            this.b_readall.Size = new System.Drawing.Size(87, 23);
             this.b_readall.TabIndex = 2;
             this.b_readall.Text = "All";
             this.b_readall.UseVisualStyleBackColor = true;
@@ -324,9 +328,9 @@
             // 
             // b_readdistance
             // 
-            this.b_readdistance.Location = new System.Drawing.Point(34, 68);
+            this.b_readdistance.Location = new System.Drawing.Point(107, 39);
             this.b_readdistance.Name = "b_readdistance";
-            this.b_readdistance.Size = new System.Drawing.Size(98, 23);
+            this.b_readdistance.Size = new System.Drawing.Size(87, 23);
             this.b_readdistance.TabIndex = 1;
             this.b_readdistance.Text = "Distance";
             this.b_readdistance.UseVisualStyleBackColor = true;
@@ -334,9 +338,9 @@
             // 
             // b_readcolour
             // 
-            this.b_readcolour.Location = new System.Drawing.Point(34, 38);
+            this.b_readcolour.Location = new System.Drawing.Point(9, 38);
             this.b_readcolour.Name = "b_readcolour";
-            this.b_readcolour.Size = new System.Drawing.Size(98, 23);
+            this.b_readcolour.Size = new System.Drawing.Size(87, 23);
             this.b_readcolour.TabIndex = 0;
             this.b_readcolour.Text = "Colour";
             this.b_readcolour.UseVisualStyleBackColor = true;
@@ -442,7 +446,6 @@
             // 
             // p_maintenance
             // 
-            this.p_maintenance.Controls.Add(this.b_colourguess);
             this.p_maintenance.Controls.Add(this.cb_mtoggle);
             this.p_maintenance.Controls.Add(this.gb_manualcommand);
             this.p_maintenance.Controls.Add(this.gb_speak);
@@ -454,23 +457,23 @@
             this.p_maintenance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.p_maintenance.Location = new System.Drawing.Point(0, 0);
             this.p_maintenance.Name = "p_maintenance";
-            this.p_maintenance.Size = new System.Drawing.Size(1303, 464);
+            this.p_maintenance.Size = new System.Drawing.Size(1183, 464);
             this.p_maintenance.TabIndex = 1;
             // 
             // b_colourguess
             // 
-            this.b_colourguess.Location = new System.Drawing.Point(955, 209);
+            this.b_colourguess.Location = new System.Drawing.Point(30, 115);
             this.b_colourguess.Name = "b_colourguess";
             this.b_colourguess.Size = new System.Drawing.Size(136, 23);
             this.b_colourguess.TabIndex = 14;
-            this.b_colourguess.Text = "Guess the Colour!";
+            this.b_colourguess.Text = "Guess the Colour";
             this.b_colourguess.UseVisualStyleBackColor = true;
             this.b_colourguess.Click += new System.EventHandler(this.b_colourguess_Click);
             // 
             // cb_mtoggle
             // 
             this.cb_mtoggle.AutoSize = true;
-            this.cb_mtoggle.Location = new System.Drawing.Point(955, 167);
+            this.cb_mtoggle.Location = new System.Drawing.Point(505, 433);
             this.cb_mtoggle.Name = "cb_mtoggle";
             this.cb_mtoggle.Size = new System.Drawing.Size(242, 21);
             this.cb_mtoggle.TabIndex = 13;
@@ -486,7 +489,7 @@
             this.gb_manualcommand.Size = new System.Drawing.Size(200, 100);
             this.gb_manualcommand.TabIndex = 12;
             this.gb_manualcommand.TabStop = false;
-            this.gb_manualcommand.Text = "Command";
+            this.gb_manualcommand.Text = "Manual Command";
             // 
             // b_sendcommand
             // 
@@ -547,10 +550,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1303, 464);
+            this.ClientSize = new System.Drawing.Size(1183, 464);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.p_maintenance);
             this.Controls.Add(this.p_operations);
+            this.Controls.Add(this.p_maintenance);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Alien Control";
