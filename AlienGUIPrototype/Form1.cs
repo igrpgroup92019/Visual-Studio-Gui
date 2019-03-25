@@ -246,7 +246,7 @@ namespace AlienGUIPrototype
             // Logic for colour comparison
             // Variables
             double bluemult = 1.5;
-            int ywcutoff = 130;
+            int ywcutoff = 145;
             double bluecompcheck = 0.75;
             int nullcutoff = 85;
             int r = data[1];
@@ -771,10 +771,11 @@ namespace AlienGUIPrototype
                         throw new IOException("Incorrect message recieved");
                     }
                     int[] data = processReadings(message);
-                    turtlehere = data[0] < 255;
+                    turtlehere = (data[0] < 255 && data[0] > 0);
                 }
                 if (!turtlehere)
                 {
+                    // Used if waiting for turtle has a timer
                     throw new TimeoutException("Did not find robot in time");
                 }
                 // Push and retract
